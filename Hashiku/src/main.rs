@@ -16,14 +16,8 @@ const BANNER: &str = "
 
 const RESET: &str = "\x1b[0m";
 const BOLD: &str = "\x1b[1m";
-const DIM: &str = "\x1b[2m";
 const ITALIC: &str = "\x1b[3m";
-const UNDERLINE: &str = "\x1b[4m";
-const BLINK: &str = "\x1b[5m";
-const RAPID_BLINK: &str = "\x1b[6m";
-const INVERSE: &str = "\x1b[7m";
-const HIDDEN: &str = "\x1b[8m";
-const STRIKETHROUGH: &str = "\x1b[9m";
+
 
 // Text Colors
 const BLACK: &str = "\x1b[30m";
@@ -44,19 +38,29 @@ struct Args {
         count: u8,
 } 
     
-fn  display(output: Vec<&HashInfo>){ 
-    for i in output{
-        println!("{RED}[+]{RESET
-        } {:<35}{:<25}{:<25}{:<25},",i.name,i.hashcat.unwrap_or("----"),i.john.unwrap_or("----"),i.description.unwrap_or("----"));
+fn  display(output: Vec<&HashInfo>,popular: Vec<&HashInfo>){ 
+    println!("{RED}{BOLD}[o] {:<40}{:<15}{:<15}{:<30}\n","HASHING ALGORITHM NAME","HASHCAT","JOHN","DESCRIPTION");
+    if !popular.is_empty() {
+        println!("{RED}{BOLD}[*] MOST LIKLEY MATCHES\n");
+        for i in popular{
+            println!("{BOLD}{RED}[+]{RESET} {:<40}{:<15}{:<15}{:<30}",i.name,i.hashcat.unwrap_or("......."),i.john.unwrap_or("...."),i.description.unwrap_or("..........."));
+        }
+        println!("");
+    }
+    if !output.is_empty() {
+        println!("{RED}{BOLD}[-] LIKLEY MATCHES\n");
+        for i in output {
+            println!("{BOLD}{RED}[+]{RESET} {:<40}{:<15}{:<15}{:<30}",i.name,i.hashcat.unwrap_or("......."),i.john.unwrap_or("...."),i.description.unwrap_or("..........."));
+    }
     }
 }
 
 fn main() {
     let args = Args::parse();
     let identifier = HashIdentifier::new(&*PATTERNS);
-    let output = identifier.match_pattern(&args.hash);
+    let (outputpos, outputprob) = identifier.match_pattern(&args.hash);
     println!("{}",BANNER);
     println!("{RED}{BOLD}CHECKING PATTERNS THAT MATCH: {ITALIC}{GREEN}\"{}\"{RESET}\n",args.hash);
-    display(output);
+    display(outputpos,outputprob);
     exit(0);
 }
