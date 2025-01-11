@@ -1,74 +1,62 @@
 mod patterns;
 use clap::Parser;
-use once_cell::sync::Lazy;
-use regex::Regex;
-use std::time::Instant;
 use std::process::exit;
+use patterns::{PATTERNS,HashIdentifier,HashInfo};
 
-#[derive(Debug)]
-struct HashInfo {
-    name: &'static str,
-    john: Option<&'static str>,
-    hashcat: Option<&'static str>,
-    variation: bool,
-    description: Option<&'static str>,
-}
-#[derive(Debug)]
-struct Pattern {
-    regex: &'static Regex,
-    modes: Vec<HashInfo>,
-}
+const TOP: u8 = 5;
+const BANNER: &str = "
+\x1b[31m
+██╗  ██╗ █████╗ ███████╗██╗  ██╗██╗███╗   ██╗ █████╗ ████████╗ ██████╗ ██████╗ 
+██║  ██║██╔══██╗██╔════╝██║  ██║██║████╗  ██║██╔══██╗╚══██╔══╝██╔═══██╗██╔══██╗
+███████║███████║███████╗███████║██║██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝
+██╔══██║██╔══██║╚════██║██╔══██║██║██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗
+██║  ██║██║  ██║███████║██║  ██║██║██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝                                                                
+\x1b[0m";
 
-struct HashIdentifier {
-    patterns: Vec<Pattern>,
-}
+const RESET: &str = "\x1b[0m";
+const BOLD: &str = "\x1b[1m";
+const DIM: &str = "\x1b[2m";
+const ITALIC: &str = "\x1b[3m";
+const UNDERLINE: &str = "\x1b[4m";
+const BLINK: &str = "\x1b[5m";
+const RAPID_BLINK: &str = "\x1b[6m";
+const INVERSE: &str = "\x1b[7m";
+const HIDDEN: &str = "\x1b[8m";
+const STRIKETHROUGH: &str = "\x1b[9m";
 
-impl<'a> HashIdentifier {
-    fn new(patterns: Vec<Pattern>) -> Self {
-        Self { patterns }
-    }
-    fn match_pattern(&self, input: &str) -> Vec<&HashInfo> {
-        let mut possible = vec![];
-        for pattern in &self.patterns {
-            if pattern.regex.is_match(input) {
-                possible.extend(&pattern.modes);
-            }
-        }
-        possible
-    }
-}
+// Text Colors
+const BLACK: &str = "\x1b[30m";
+const RED: &str = "\x1b[31m";
+const GREEN: &str = "\x1b[32m";
+const YELLOW: &str = "\x1b[33m";
+const BLUE: &str = "\x1b[34m";
+const MAGENTA: &str = "\x1b[35m";
+const CYAN: &str = "\x1b[36m";
+const WHITE: &str = "\x1b[37m";
 
-fn output_results(results: Vec<&HashInfo>) {
-    for x in results {
-        println!(
-            "[+] {:<40}{:<20}{:<20}{:<20}{:<20}",
-            x.name,
-            x.john.unwrap_or("____"),
-            x.hashcat.unwrap_or("____"),
-            x.variation,
-            x.description.unwrap_or("____")
-        );
-    }
-}
-
-fn main() {
-    std::thread::spawn(||)
-    let start = Instant::now();
-    #[derive(Parser, Debug)]
-    #[command(version = "0.0.1", about = "Simple and small rust tool to identify hashes", long_about = None)]
-    struct Args {
+#[derive(Parser, Debug)]
+#[command(version = "0.0.1", about = "IDENTIFY HASHES", long_about = None)]
+struct Args {
         #[arg(short = 't', long = "text")]
         hash: String,
         #[arg(short, long, default_value_t = 1)]
         count: u8,
+} 
+    
+fn  display(output: Vec<&HashInfo>){ 
+    for i in output{
+        println!("{RED}[+]{RESET
+        } {:<35}{:<25}{:<25}{:<25},",i.name,i.hashcat.unwrap_or("----"),i.john.unwrap_or("----"),i.description.unwrap_or("----"));
     }
-    println!("{:?}",start.elapsed());
+}
+
+fn main() {
     let args = Args::parse();
-    let hash_identifer = HashIdentifier::new(patterns::get_patterns());
-    println!("{:?}",start.elapsed());
-    let possibilities = hash_identifer.match_pattern(&args.hash);
-    println!("{:?}",start.elapsed());
-    output_results(possibilities);
-    println!("{:?}",start.elapsed());
+    let identifier = HashIdentifier::new(&*PATTERNS);
+    let output = identifier.match_pattern(&args.hash);
+    println!("{}",BANNER);
+    println!("{RED}{BOLD}CHECKING PATTERNS THAT MATCH: {ITALIC}{GREEN}\"{}\"{RESET}\n",args.hash);
+    display(output);
     exit(0);
 }

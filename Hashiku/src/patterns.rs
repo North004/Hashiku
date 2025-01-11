@@ -1,14 +1,9 @@
-use crate::{HashInfo, Pattern};
-use regex::{Regex,RegexBuilder};
+use pcre2::bytes::{Regex,RegexBuilder};
 use once_cell::sync::Lazy;
 
 fn regex_no_u(pattern: &str, case_insensitive: bool) -> Regex {
-     RegexBuilder::new(pattern)
-         .unicode(true)
-         .case_insensitive(case_insensitive)
-         .build()
-         .expect("Failed to build regex")
- }
+    RegexBuilder::new().caseless(case_insensitive).build(pattern).unwrap()
+}
 
 static PATTERN0 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{4}$"##,true));
 static PATTERN1 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{8}$"##,true));
@@ -223,9 +218,7 @@ static PATTERN209 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$keepass\$\*2\*\
 static PATTERN210 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$odf\$\*1\*1\*100000\*32\*[a-f0-9]{64}\*16\*[a-f0-9]{32}\*16\*[a-f0-9]{32}\*0\*[a-f0-9]{2048}$"##,true));
 static PATTERN211 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*$"##,true));
 
-
-pub fn get_patterns() -> Vec<Pattern> {
-     vec![
+pub static PATTERNS : Lazy<Vec<Pattern>> = Lazy::new(|| vec![
   Pattern { regex: &*PATTERN0, modes: vec![
           HashInfo{ name: "CRC-16", john: None ,hashcat: None ,variation: false ,description: None },
           HashInfo{ name: "CRC-16-CCITT", john: None ,hashcat: None ,variation: false ,description: None },
@@ -1037,5 +1030,37 @@ pub fn get_patterns() -> Vec<Pattern> {
   Pattern { regex: &*PATTERN211, modes: vec![
           HashInfo{ name: "JWT (JSON Web Token)", john: None ,hashcat: Some("16500") ,variation: false ,description: None },
 ]},
-]
+]);
+
+#[derive(Debug)]
+pub struct HashInfo {
+    pub name: &'static str,
+    pub john: Option<&'static str>,
+    pub hashcat: Option<&'static str>,
+    pub variation: bool,
+    pub description: Option<&'static str>,
+}
+#[derive(Debug)]
+pub struct Pattern {
+    pub regex: &'static Regex,
+    pub modes: Vec<HashInfo>,
+}
+#[derive(Debug)]
+pub struct HashIdentifier<'a> {
+    pub patterns: &'a Vec<Pattern>,
+}
+
+impl<'a> HashIdentifier<'a> {
+    pub fn new(patterns: &'a Vec<Pattern>) -> Self {
+        Self { patterns }
+    }
+    pub fn match_pattern(&self, input: &str) -> Vec<&HashInfo> {
+        let mut possible = vec![];
+        for pattern in self.patterns {
+            if pattern.regex.is_match(input.as_bytes()).expect("regex error") {
+                possible.extend(&pattern.modes);
+            }
+        }
+        possible
+    }
 }
