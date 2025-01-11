@@ -1,9 +1,12 @@
 [package]
-name = "Hashiku"
+name = "hashiku"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 cap = "0.1.2"
 clap = { version = "4.5.26", features = ["derive"] }
+lazy_static = "1.5.0"
+rayon = "1.10.0"
 regex = "1.11.1"
+regex-macro = "0.2.0"
