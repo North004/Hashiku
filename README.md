@@ -10,10 +10,10 @@
 - [License](#license)
 
 ## About
- - ### 🚀 Blaingly fast hash identificaiton tool.
- - ### 📚 Informative summary provided for each hash allowing you to better identify likley hashes.
- - ### 💯 Hashes ranked by popularity allowing you to identify the correct hash the first time
- - ### ⚙️ Built with rust that alone should be enough i mean its rust.
+ - 🚀 Blaingly fast hash identificaiton tool.
+ - 📚 Informative summary provided for each hash allowing you to better identify likley hashes.
+ - 💯 Hashes ranked by popularity allowing you to identify the correct hash the first time
+ - ⚙️ Built with rust that alone should be enough i mean its rust.
 
 ## Usage
 ```
