@@ -34,8 +34,6 @@ const WHITE: &str = "\x1b[37m";
 struct Args {
         #[arg(short = 't', long = "text")]
         hash: String,
-        #[arg(short, long, default_value_t = 1)]
-        count: u8,
 } 
     
 fn  display(output: Vec<&HashInfo>,popular: Vec<&HashInfo>){ 
