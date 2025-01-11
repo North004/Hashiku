@@ -1,6 +1,9 @@
 mod patterns;
 use clap::Parser;
+use once_cell::sync::Lazy;
 use regex::Regex;
+use std::time::Instant;
+use std::process::exit;
 
 #[derive(Debug)]
 struct HashInfo {
@@ -11,17 +14,17 @@ struct HashInfo {
     description: Option<&'static str>,
 }
 #[derive(Debug)]
-struct Pattern<'a> {
-    regex: &'a Regex,
+struct Pattern {
+    regex: &'static Regex,
     modes: Vec<HashInfo>,
 }
 
-struct HashIdentifier<'a> {
-    patterns: Vec<Pattern<'a>>,
+struct HashIdentifier {
+    patterns: Vec<Pattern>,
 }
 
-impl<'a> HashIdentifier<'a> {
-    fn new(patterns: Vec<Pattern<'a>>) -> Self {
+impl<'a> HashIdentifier {
+    fn new(patterns: Vec<Pattern>) -> Self {
         Self { patterns }
     }
     fn match_pattern(&self, input: &str) -> Vec<&HashInfo> {
@@ -49,6 +52,8 @@ fn output_results(results: Vec<&HashInfo>) {
 }
 
 fn main() {
+    std::thread::spawn(||)
+    let start = Instant::now();
     #[derive(Parser, Debug)]
     #[command(version = "0.0.1", about = "Simple and small rust tool to identify hashes", long_about = None)]
     struct Args {
@@ -57,8 +62,13 @@ fn main() {
         #[arg(short, long, default_value_t = 1)]
         count: u8,
     }
+    println!("{:?}",start.elapsed());
     let args = Args::parse();
     let hash_identifer = HashIdentifier::new(patterns::get_patterns());
+    println!("{:?}",start.elapsed());
     let possibilities = hash_identifer.match_pattern(&args.hash);
+    println!("{:?}",start.elapsed());
     output_results(possibilities);
+    println!("{:?}",start.elapsed());
+    exit(0);
 }

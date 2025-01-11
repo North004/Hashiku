@@ -150,6 +150,7 @@ dependencies = [
  "cap",
  "clap",
  "lazy_static",
+ "once_cell",
  "rayon",
  "regex",
  "regex-macro",
