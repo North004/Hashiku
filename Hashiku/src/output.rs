@@ -1,25 +1,62 @@
+use crate::patterns::HashInfo;
+
 const BANNER: &str = "
-\x1b[31m
 ██╗  ██╗ █████╗ ███████╗██╗  ██╗██╗███╗   ██╗ █████╗ ████████╗ ██████╗ ██████╗ 
 ██║  ██║██╔══██╗██╔════╝██║  ██║██║████╗  ██║██╔══██╗╚══██╔══╝██╔═══██╗██╔══██╗
 ███████║███████║███████╗███████║██║██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝
 ██╔══██║██╔══██║╚════██║██╔══██║██║██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗
 ██║  ██║██║  ██║███████║██║  ██║██║██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║
-╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝                                                                
-\x1b[0m";
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝";
 
-const RESET: &str = "\x1b[0m";
-const BOLD: &str = "\x1b[1m";
-const ITALIC: &str = "\x1b[3m";
-const UNDERLINE: &str = "\x1b[4m";
+pub fn welcome(banner: bool, hash: &str) {
+    if !banner {
+        println!("{BANNER}")
+    }
+    println!("Hash: {hash}")
+}
 
+pub fn output_line(hash: &HashInfo, symbol: &str) {
+    println!("[{}] {}", symbol, hash.name,);
+}
 
-// Text Colors
-const BLACK: &str = "\x1b[30m";
-const RED: &str = "\x1b[31m";
-const GREEN: &str = "\x1b[32m";
-const YELLOW: &str = "\x1b[33m";
-const BLUE: &str = "\x1b[34m";
-const MAGENTA: &str = "\x1b[35m";
-const CYAN: &str = "\x1b[36m";
-const WHITE: &str = "\x1b[37m";
+pub fn output_line_tags(hash: &HashInfo, symbol: &str) {
+    let hashcat: String = match hash.hashcat {
+        Some(x) => format!("Hashcat: {}", x),
+        _ => "".to_string(),
+    };
+    let john: String = match hash.john {
+        Some(x) => format!("John: {}", x),
+        _ => "".to_string(),
+    };
+    let summary: String = match hash.description {
+        Some(x) => format!("Summary: {}", x),
+        _ => "".to_string(),
+    };
+    println!(
+        "[{}] {}  {}  {}  {}",
+        symbol, hash.name, hashcat, john, summary
+    );
+}
+
+pub fn output_collection<F: Fn(&HashInfo, &str)>(
+    collection: Vec<&HashInfo>,
+    symbol: &str,
+    func: F,
+) {
+    for hash in collection {
+        func(hash, symbol);
+    }
+}
+
+pub fn output_complete(total: (Vec<&HashInfo>, Vec<&HashInfo>)) {
+    println!();
+    if !total.0.is_empty() {
+        println!("Most likley Hash functions");
+        output_collection(total.0, "+", output_line_tags);
+    }
+    println!();
+    if !total.1.is_empty() {
+        println!("Likley Hashes functions");
+        output_collection(total.1, "-", output_line);
+    }
+}

@@ -1,224 +1,740 @@
-use pcre2::bytes::{Regex,RegexBuilder};
 use once_cell::sync::Lazy;
+use pcre2::bytes::{Regex, RegexBuilder};
 
 fn regex_no_u(pattern: &str, case_insensitive: bool) -> Regex {
-    RegexBuilder::new().ucp(false).utf(true).caseless(case_insensitive).build(pattern).unwrap()
+    RegexBuilder::new()
+        .ucp(false)
+        .utf(true)
+        .caseless(case_insensitive)
+        .build(pattern)
+        .unwrap()
 }
 
-static PATTERN0 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{4}$"##,true));
-static PATTERN1 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{8}$"##,true));
-static PATTERN2 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{6}$"##,true));
-static PATTERN3 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$crc32\$)?([a-f0-9]{8}.)?[a-f0-9]{8}$"##,true));
-static PATTERN4 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\+[a-z0-9\/.]{12}$"##,true));
-static PATTERN5 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{12}[.26AEIMQUYcgkosw]{1}$"##,true));
-static PATTERN6 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{16}$"##,true));
-static PATTERN7 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{16}:[a-f0-9]{0,30}$"##,true));
-static PATTERN8 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{16}$"##,true));
-static PATTERN9 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\([a-z0-9\/+]{20}\)$"##,true));
-static PATTERN10 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^_[a-z0-9\/.]{19}$"##,true));
-static PATTERN11 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{24}$"##,true));
-static PATTERN12 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$keepass\$\*1\*50000\*(0|1)\*([a-f0-9]{32})\*([a-f0-9]{64})\*([a-f0-9]{32})\*([a-f0-9]{64})\*1\*(192|1360)\*([a-f0-9]{384})$"##,false));
-static PATTERN13 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$keepass\$\*1\*6000\*(0|1)\*([a-f0-9]{32})\*([a-f0-9]{64})\*([a-f0-9]{32})\*([a-f0-9]{64})\*1\*(192|1360)\*([a-f0-9]{2720})\*1\*64\*([a-f0-9]{64})$"##,false));
-static PATTERN14 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$keepass\$\*2\*6000\*222(\*[a-f0-9]{64}){2}(\*[a-f0-9]{32}){1}(\*[a-f0-9]{64}){2}\*1\*64(\*[a-f0-9]{64}){1}$"##,false));
-static PATTERN15 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$keepass\$\*2\*6000\*222\*(([a-f0-9]{32,64})(\*)?)+$"##,false));
-static PATTERN16 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{24}$"##,true));
-static PATTERN17 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}$"##,true));
-static PATTERN18 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"(?:\$haval\$)?[a-f0-9]{32,64}$"##,true));
-static PATTERN19 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"(?:\$ripemd\$)?[a-f0-9]{32,40}$"##,true));
-static PATTERN20 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{16}$"##,true));
-static PATTERN21 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"(?:\$dynamic_39\$)?[a-f0-9]{32}\$[a-z0-9]{1,32}\$?[a-z0-9]{1,500}"##,true));
-static PATTERN22 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-z0-9]+$"##,true));
-static PATTERN23 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-z0-9]{56}$"##,true));
-static PATTERN24 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$md2\$)?[a-f0-9]{32}$"##,true));
-static PATTERN25 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$snefru\$)?[a-f0-9]{32}$"##,true));
-static PATTERN26 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$NT\$)?[a-f0-9]{32}$"##,true));
-static PATTERN27 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^([^\\\/:*?"<>|]{1,20}:)?[a-f0-9]{32}(:[^\\\/:*?"<>|]{1,20})?$"##,true));
-static PATTERN28 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^([^\\\/:*?"<>|]{1,20}:)?(\$DCC2\$10240#[^\\\/:*?"<>|]{1,20}#)?[a-f0-9]{32}$"##,true));
-static PATTERN29 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{SHA}[a-z0-9\/+]{27}=$"##,true));
-static PATTERN30 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$1\$[a-z0-9\/.]{0,8}\$[a-z0-9\/.]{22}(:.*)?$"##,true));
-static PATTERN31 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x[a-f0-9]{32}$"##,true));
-static PATTERN32 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$H\$[a-z0-9\/.]{31}$"##,true));
-static PATTERN33 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$P\$[a-z0-9\/.]{31}$"##,true));
-static PATTERN34 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-z0-9]{2}$"##,true));
-static PATTERN35 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$apr1\$[a-z0-9\/.]{0,8}\$[a-z0-9\/.]{22}$"##,true));
-static PATTERN36 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{smd5}[a-z0-9$\/.]{31}$"##,true));
-static PATTERN37 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:.{5}$"##,true));
-static PATTERN38 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:.{8}$"##,true));
-static PATTERN39 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9]{34}$"##,true));
-static PATTERN40 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}(:.+)?$"##,true));
-static PATTERN41 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}$"##,true));
-static PATTERN42 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9]{43}$"##,true));
-static PATTERN43 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{SSHA}[a-z0-9\/+]{38}==$"##,true));
-static PATTERN44 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9=]{47}$"##,true));
-static PATTERN45 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{48}$"##,true));
-static PATTERN46 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{51}$"##,true));
-static PATTERN47 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9]{51}$"##,true));
-static PATTERN48 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{ssha1}[0-9]{2}\$[a-z0-9$\/.]{44}$"##,true));
-static PATTERN49 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x0100[a-f0-9]{48}$"##,true));
-static PATTERN50 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$md5,rounds=[0-9]+\$|\$md5\$rounds=[0-9]+\$|\$md5\$)[a-z0-9\/.]{0,16}(\$|\$\$)[a-z0-9\/.]{22}$"##,true));
-static PATTERN51 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{56}$"##,true));
-static PATTERN52 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$2[abxy]?|\$2)\$[0-9]{2}\$[a-z0-9\/.]{53}$"##,true));
-static PATTERN53 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$y\$[.\/A-Za-z0-9]+\$[.\/a-zA-Z0-9]+\$[.\/A-Za-z0-9]{43}$"##,true));
-static PATTERN54 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}:[a-f0-9]{16}$"##,true));
-static PATTERN55 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(S:)?[a-f0-9]{40}(:)?[a-f0-9]{20}$"##,true));
-static PATTERN56 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$bcrypt-sha256\$(2[axy]|2)\,[0-9]+\$[a-z0-9\/.]{22}\$[a-z0-9\/.]{31}$"##,true));
-static PATTERN57 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:.{3}$"##,true));
-static PATTERN58 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:.{30}$"##,true));
-static PATTERN59 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$snefru\$)?[a-f0-9]{64}$"##,true));
-static PATTERN60 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{64}(:.+)?$"##,true));
-static PATTERN61 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-z0-9]{32}$"##,true));
-static PATTERN62 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-f0-9]{32}$"##,true));
-static PATTERN63 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$chap\$0\*)?[a-f0-9]{32}[\*:][a-f0-9]{32}(:[0-9]{2})?$"##,true));
-static PATTERN64 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$episerver\$\*0\*[a-z0-9\/=+]+\*[a-z0-9\/=+]{27,28}$"##,true));
-static PATTERN65 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{ssha256}[0-9]{2}\$[a-z0-9$\/.]{60}$"##,true));
-static PATTERN66 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{80}$"##,true));
-static PATTERN67 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$episerver\$\*1\*[a-z0-9\/=+]+\*[a-z0-9\/=+]{42,43}$"##,true));
-static PATTERN68 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x0100[a-f0-9]{88}$"##,true));
-static PATTERN69 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{96}$"##,true));
-static PATTERN70 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{SSHA512}[a-z0-9\/+]{96}$"##,true));
-static PATTERN71 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{ssha512}[0-9]{2}\$[a-z0-9\/.]{16,48}\$[a-z0-9\/.]{86}$"##,true));
-static PATTERN72 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{128}(:.+)?$"##,true));
-static PATTERN73 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{64}$"##,true));
-static PATTERN74 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{96}$"##,true));
-static PATTERN75 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{136}$"##,true));
-static PATTERN76 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x0200[a-f0-9]{136}$"##,true));
-static PATTERN77 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$ml\$[0-9]+\$[a-f0-9]{64}\$[a-f0-9]{128}$"##,true));
-static PATTERN78 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{256}$"##,true));
-static PATTERN79 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^grub\.pbkdf2\.sha512\.[0-9]+\.([a-f0-9]{128,2048}\.|[0-9]+\.)?[a-f0-9]{128}$"##,true));
-static PATTERN80 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^sha1\$[a-z0-9]+\$[a-f0-9]{40}$"##,true));
-static PATTERN81 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{49}$"##,true));
-static PATTERN82 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$S\$[a-z0-9\/.]{52}$"##,true));
-static PATTERN83 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$5\$(rounds=[0-9]+\$)?[a-z0-9\/.]{0,16}\$[a-z0-9\/.]{43}$"##,true));
-static PATTERN84 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x[a-f0-9]{4}[a-f0-9]{16}[a-f0-9]{64}$"##,true));
-static PATTERN85 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$6\$(rounds=[0-9]+\$)?[a-z0-9\/.]{0,16}\$[a-z0-9\/.]{86}$"##,true));
-static PATTERN86 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$sha\$[a-z0-9]{1,16}\$([a-f0-9]{32}|[a-f0-9]{40}|[a-f0-9]{64}|[a-f0-9]{128}|[a-f0-9]{140})$"##,true));
-static PATTERN87 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^sha256\$[a-z0-9]+\$[a-f0-9]{64}$"##,true));
-static PATTERN88 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^sha384\$[a-z0-9]+\$[a-f0-9]{96}$"##,true));
-static PATTERN89 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^crypt1:[a-z0-9+=]{12}:[a-z0-9+=]{12}$"##,true));
-static PATTERN90 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{112}$"##,true));
-static PATTERN91 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{1329}$"##,true));
-static PATTERN92 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[^\\\/:*?"<>|]{1,20}[:]{2,3}([^\\\/:*?"<>|]{1,20})?:[a-f0-9]{48}:[a-f0-9]{48}:[a-f0-9]{16}$"##,true));
-static PATTERN93 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^([^\\\/:*?"<>|]{1,20}\\)?[^\\\/:*?"<>|]{1,20}[:]{2,3}([^\\\/:*?"<>|]{1,20}:)?[^\\\/:*?"<>|]{1,20}:[a-f0-9]{32}:[a-f0-9]+$"##,true));
-static PATTERN94 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$(krb5pa|mskrb5)\$(23)?\$.+\$[a-f0-9]{1,}$"##,true));
-static PATTERN95 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$scram\$[0-9]+\$[a-z0-9\/.]{16}\$sha-1=[a-z0-9\/.]{27},sha-256=[a-z0-9\/.]{43},sha-512=[a-z0-9\/.]{86}$"##,true));
-static PATTERN96 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}:[a-f0-9]{0,32}$"##,true));
-static PATTERN97 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^([^$]+)?\$[a-f0-9]{16}$"##,true));
-static PATTERN98 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(.+)?\$[a-f0-9]{40}$"##,true));
-static PATTERN99 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(.+\$)?[a-z0-9\/.+]{30}(:.+)?$"##,true));
-static PATTERN100 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x(?:[a-f0-9]{60}|[a-f0-9]{40})$"##,true));
-static PATTERN101 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}:[^*]{1,25}$"##,true));
-static PATTERN102 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$wbb3\$\*1\*)?[a-f0-9]{40}[:*][a-f0-9]{40}$"##,true));
-static PATTERN103 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{130}(:[a-f0-9]{40})?$"##,true));
-static PATTERN104 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[0-9]+:[a-z0-9_.+-]+@[a-z0-9-]+\.[a-z0-9-.]+$"##,true));
-static PATTERN105 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{16}([:$].{1,})?$"##,true));
-static PATTERN106 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$vnc\$\*[a-f0-9]{32}\*[a-f0-9]{32}$"##,true));
-static PATTERN107 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9]{32}(:([a-z0-9-]+\.)?[a-z0-9-.]+\.[a-z]{2,7}:.+:[0-9]+)?$"##,true));
-static PATTERN108 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(user-.+:)?\$racf\$\*.+\*[a-f0-9]{16}$"##,true));
-static PATTERN109 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$3\$\$[a-f0-9]{32}$"##,true));
-static PATTERN110 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$sha1\$[0-9]+\$[a-z0-9\/.]{0,64}\$[a-z0-9\/.]{28}$"##,true));
-static PATTERN111 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{70}$"##,true));
-static PATTERN112 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[:\$][AB][:\$]([a-f0-9]{1,8}[:\$])?[a-f0-9]{32}$"##,true));
-static PATTERN113 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{140}$"##,true));
-static PATTERN114 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$pbkdf2(-sha1)?\$[0-9]+\$[a-z0-9\/.]+\$[a-z0-9\/.]{27}$"##,true));
-static PATTERN115 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$pbkdf2-sha256\$[0-9]+\$[a-z0-9\/.]+\$[a-z0-9\/.]{43}$"##,true));
-static PATTERN116 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$pbkdf2-sha512\$[0-9]+\$[a-z0-9\/.]+\$[a-z0-9\/.]{86}$"##,true));
-static PATTERN117 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$p5k2\$[0-9]+\$[a-z0-9\/+=-]+\$[a-z0-9\/+-]{27}=$"##,true));
-static PATTERN118 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$p5k2\$[0-9]+\$[a-z0-9\/.]+\$[a-z0-9\/.]{32}$"##,true));
-static PATTERN119 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{FSHP[0123]\|[0-9]+\|[0-9]+}[a-z0-9\/+=]+$"##,true));
-static PATTERN120 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$PHPS\$.+\$[a-f0-9]{32}$"##,true));
-static PATTERN121 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[0-9]{4}:[a-f0-9]{16}:[a-f0-9]{2080}$"##,true));
-static PATTERN122 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{64}:[a-f0-9]{32}:[0-9]{5}:[a-f0-9]{608}$"##,true));
-static PATTERN123 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{256}:[a-f0-9]{256}:[a-f0-9]{16}:[a-f0-9]{16}:[a-f0-9]{320}:[a-f0-9]{16}:[a-f0-9]{40}:[a-f0-9]{40}:[a-f0-9]{32}$"##,true));
-static PATTERN124 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{256}:[a-f0-9]{256}:[a-f0-9]{16}:[a-f0-9]{16}:[a-f0-9]{320}:[a-f0-9]{16}:[a-f0-9]{40}:[a-f0-9]{40}:[a-f0-9]{40}$"##,true));
-static PATTERN125 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/+]{27}=$"##,true));
-static PATTERN126 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^crypt\$[a-f0-9]{5}\$[a-z0-9\/.]{13}$"##,true));
-static PATTERN127 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$django\$\*1\*)?pbkdf2_sha256\$[0-9]+\$[a-z0-9]+\$[a-z0-9\/+=]{44}$"##,true));
-static PATTERN128 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^pbkdf2_sha1\$[0-9]+\$[a-z0-9]+\$[a-z0-9\/+=]{28}$"##,true));
-static PATTERN129 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^bcrypt(\$2[axy]|\$2)\$[0-9]{2}\$[a-z0-9\/.]{53}$"##,true));
-static PATTERN130 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^md5\$[a-f0-9]+\$[a-f0-9]{32}$"##,true));
-static PATTERN131 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{PKCS5S2\}[a-z0-9\/+]{64}$"##,true));
-static PATTERN132 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^md5[a-f0-9]{32}$"##,true));
-static PATTERN133 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\([a-z0-9\/+]{49}\)$"##,true));
-static PATTERN134 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^SCRYPT:[0-9]{1,}:[0-9]{1}:[0-9]{1}:[a-z0-9:\/+=]{1,}$"##,true));
-static PATTERN135 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$8\$[a-z0-9\/.]{14}\$[a-z0-9\/.]{43}$"##,true));
-static PATTERN136 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$9\$[a-z0-9\/.]{14}\$[a-z0-9\/.]{43}$"##,true));
-static PATTERN137 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$office\$\*2007\*[0-9]{2}\*[0-9]{3}\*[0-9]{2}\*[a-z0-9]{32}\*[a-z0-9]{32}\*[a-z0-9]{40}$"##,true));
-static PATTERN138 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$office\$\*2010\*[0-9]{6}\*[0-9]{3}\*[0-9]{2}\*[a-z0-9]{32}\*[a-z0-9]{32}\*[a-z0-9]{64}$"##,true));
-static PATTERN139 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\\$office\\$2016\\$[0-9]\\$[0-9]{6}\\$[^$]{24}\\$[^$]{88}$"##,true));
-static PATTERN140 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$office\$\*2013\*[0-9]{6}\*[0-9]{3}\*[0-9]{2}\*[a-z0-9]{32}\*[a-z0-9]{32}\*[a-z0-9]{64}$"##,true));
-static PATTERN141 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$fde\$[0-9]{2}\$[a-f0-9]{32}\$[0-9]{2}\$[a-f0-9]{32}\$[a-f0-9]{3072}$"##,true));
-static PATTERN142 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$krb5tgs\$23\$\*[^*]*\*\$[a-f0-9]{32}\$[a-f0-9]{64,40960}"##,true));
-static PATTERN143 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$oldoffice\$[01]\*[a-f0-9]{32}\*[a-f0-9]{32}\*[a-f0-9]{32}$"##,true));
-static PATTERN144 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$oldoffice\$[34]\*[a-f0-9]{32}\*[a-f0-9]{32}\*[a-f0-9]{40}$"##,true));
-static PATTERN145 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$oldoffice\$[34]\*[a-f0-9]{32}\*[a-f0-9]{32}\*[a-f0-9]{40}:[a-f0-9]{10}"##,true));
-static PATTERN146 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$radmin2\$)?[a-f0-9]{32}$"##,true));
-static PATTERN147 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{x-issha,\s[0-9]{4}}[a-z0-9\/+=]+$"##,true));
-static PATTERN148 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$cram_md5\$[a-z0-9\/+=-]+\$[a-z0-9\/+=-]{52}$"##,true));
-static PATTERN149 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{16}:2:4:[a-f0-9]{32}$"##,true));
-static PATTERN150 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{4,}$"##,true));
-static PATTERN151 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{13,}$"##,true));
-static PATTERN152 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$cisco4\$)?[a-z0-9\/.]{43}$"##,true));
-static PATTERN153 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^bcrypt_sha256\$\$(2[axy]|2)\$[0-9]+\$[a-z0-9\/.]{53}$"##,true));
-static PATTERN154 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$postgres\$.[^\*]+[*:][a-f0-9]{1,32}[*:][a-f0-9]{32}$"##,true));
-static PATTERN155 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$siemens-s7\$[0-9]{1}\$[a-f0-9]{40}\$[a-f0-9]{40}$"##,true));
-static PATTERN156 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$pst\$)?[a-f0-9]{8}$"##,true));
-static PATTERN157 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^sha256[:$][0-9]+[:$][a-z0-9\/+=]+[:$][a-z0-9\/+]{32,128}$"##,true));
-static PATTERN158 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$dahua\$)?[a-z0-9]{8}$"##,true));
-static PATTERN159 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$mysqlna\$[a-f0-9]{40}[:*][a-f0-9]{40}$"##,true));
-static PATTERN160 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$pdf\$1\*[2|3]\*[0-9]{2}\*[-0-9]{1,6}\*[0-9]\*[0-9]{2}\*[a-f0-9]{32,32}\*[0-9]{2}\*[a-f0-9]{64}\*[0-9]{2}\*[a-f0-9]{64}"##,true));
-static PATTERN161 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$pdf\$1\*[2|3]\*[0-9]{2}\*[-0-9]{1,6}\*[0-9]\*[0-9]{2}\*[a-f0-9]{32}\*[0-9]{2}\*[a-f0-9]{64}\*[0-9]{2}\*[a-f0-9]{64}:[a-f0-9]{10}"##,true));
-static PATTERN162 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$pdf\$[24]\*[34]\*128\*[0-9-]{1,5}\*1\*(16|32)\*[a-f0-9]{32,64}\*32\*[a-f0-9]{64}\*(8|16|32)\*[a-f0-9]{16,64}$"##,true));
-static PATTERN163 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$pdf\$5\*[5|6]\*[0-9]{3}\*[-0-9]{1,6}\*[0-9]\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}"##,true));
-static PATTERN164 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$pdf\$5\*[5|6]\*[0-9]{3}\*[-0-9]{1,6}\*[0-9]\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}"##,true));
-static PATTERN165 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$krb5asrep\$23\$[^:]+:[a-f0-9]{32,32}\$[a-f0-9]{64,40960}$"##,true));
-static PATTERN166 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$krb5tgs\$17\$[^$]{1,512}\$[^$]{1,512}\$[^$]{1,4}?\$?[a-f0-9]{1,32}\$[a-f0-9]{64,40960}$"##,true));
-static PATTERN167 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$krb5tgs\$18\$[^$]{1,512}\$[^$]{1,512}\$[^$]{1,4}?\$?[a-f0-9]{1,32}\$[a-f0-9]{64,40960}"##,true));
-static PATTERN168 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$krb5pa\$17\$[^$]{1,512}\$[^$]{1,512}\$[a-f0-9]{104,112}$"##,true));
-static PATTERN169 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$krb5pa\$17\$[^$]{1,512}\$[^$]{1,512}\$[^$]{0,512}\$[a-f0-9]{104,112}$"##,true));
-static PATTERN170 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$krb5pa\$18\$[^$]{1,512}\$[^$]{1,512}\$[^$]{0,512}\$[a-f0-9]{104,112}$"##,true));
-static PATTERN171 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$krb5pa\$18\$[^$]{1,512}\$[^$]{1,512}\$[a-f0-9]{104,112}$"##,true));
-static PATTERN172 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$bitcoin\$[0-9]{2,4}\$[a-f0-9$]{250,350}"##,true));
-static PATTERN173 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$ethereum\$[a-z0-9*]{150,250}"##,true));
-static PATTERN174 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$monero\$(0)\*[a-f0-9]{32,3196}"##,true));
-static PATTERN175 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$electrum\$[1-3]\*[a-f0-9]{32,32}\*[a-f0-9]{32,32}$"##,true));
-static PATTERN176 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$electrum\$4\*[a-f0-9]{1,66}\*[a-f0-9]{128,32768}\*[a-f0-9]{64,64}$"##,true));
-static PATTERN177 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$electrum\$5\*[a-f0-9]{66,66}\*[a-f0-9]{2048,2048}\*[a-f0-9]{64,64}$"##,true));
-static PATTERN178 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$ab\$[0-9]{1}\*[0-9]{1}\*[0-9]{1,6}\*[a-f0-9]{128}\*[a-f0-9]{128}\*[a-f0-9]{32}\*[a-f0-9]{192}"##,true));
-static PATTERN179 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$zip2\$\*[0-9]{1}\*[0-9]{1}\*[0-9]{1}\*[a-f0-9]{16,32}\*[a-f0-9]{1,6}\*[a-f0-9]{1,6}\*[a-f0-9]+\*[a-f0-9]{20}\*\$\/zip2\$"##,true));
-static PATTERN180 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$itunes_backup\$\*[0-9]{1,2}\*[a-f0-9]{80}\*[0-9]{1,6}\*[a-f0-9]{40}\*[0-9]{0,10}\*[a-f0-9]{0,40}"##,true));
-static PATTERN181 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$telegram\$[a-f0-9*]{99}"##,true));
-static PATTERN182 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\\$telegram\\$1\\*4000\\*[a-f0-9]{64}\\*[a-f0-9]{576}$"##,true));
-static PATTERN183 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\\$telegram\\$2\\*100000\\*[a-f0-9]{64}\\*[a-f0-9]{576}$"##,true));
-static PATTERN184 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$BLAKE2\$[a-f0-9]{128}"##,true));
-static PATTERN185 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$oldoffice\$[a-f0-9*]{100}:[a-f0-9]{10}"##,true));
-static PATTERN186 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$office\$2016\$[0-9]\$[0-9]{6}\$[^$]{24}\$[^$]{88}"##,true));
-static PATTERN187 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$7z\$[0-9]\$[0-9]{1,2}\$[0-9]{1}\$[^$]{0,64}\$[0-9]{1,2}\$[a-f0-9]{32}\$[0-9]{1,10}\$[0-9]{1,6}\$[0-9]{1,6}\$[a-f0-9]{2,}"##,true));
-static PATTERN188 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$zip3\$\*[0-9]\*[0-9]\*256\*[0-9]\*[a-f0-9]{0,32}\*[a-f0-9]{288}\*[0-9]\*[0-9]\*[0-9]\*[^\s]{0,64}"##,true));
-static PATTERN189 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$zip3\$\*[0-9]\*[0-9]\*192\*[0-9]\*[a-f0-9]{0,32}\*[a-f0-9]{288}\*[0-9]\*[0-9]\*[0-9]\*[^\s]{0,64}"##,true));
-static PATTERN190 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$zip3\$\*[0-9]\*[0-9]\*128\*[0-9]\*[a-f0-9]{0,32}\*[a-f0-9]{288}\*[0-9]\*[0-9]\*[0-9]\*[^\s]{0,64}"##,true));
-static PATTERN191 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$pkzip2?\$(1)\*[0-9]{1}\*[0-9]{1}\*[0-9a-f]{1,3}\*[0-9a-f]{1,8}\*[0-9a-f]{1,4}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*(8)\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[a-f0-9]+\*\$\/pkzip2?\$$"##,true));
-static PATTERN192 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$pkzip2?\$(1)\*[0-9]{1}\*[0-9]{1}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*(0)\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[a-f0-9]+\*\$\/pkzip2?\$$"##,true));
-static PATTERN193 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$pkzip2?\$([2-8])\*[0-9]{1}(\*[0-9]{1}\*[0-9a-f]{1,3}\*([^0*][0-9a-f]{0,2})\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[0-9a-f]+)+\*(8)\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[a-f0-9]+\*\$\/pkzip2?\$$"##,true));
-static PATTERN194 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$pkzip2?\$([2-8])\*[0-9]{1}(\*[0-9]{1}\*[0-9a-f]{1,8}\*([0-9a-f]{1,8})\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[0-9a-f]+)+\*([08])\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[a-f0-9]+\*\$\/pkzip2?\$$"##,true));
-static PATTERN195 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$pkzip2?\$([2-8])\*[0-9]{1}(\*[0-9]{1}\*[0-9a-f]{1,3}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[0-9a-f]+)+\*\$\/pkzip2?\$$"##,true));
-static PATTERN196 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$argon2i\$v=19\$m=[0-9]{1,6},t=[0-9]{1,2},p=[0-9]{1,2}\$[^$]+\$[^\s]{6,134}$"##,true));
-static PATTERN197 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$argon2id\$v=19\$m=[0-9]{1,6},t=[0-9]{1,2},p=[0-9]{1,2}\$[^$]+\$[^\s]{6,134}$"##,true));
-static PATTERN198 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$argon2d\$v=19\$m=[0-9]{1,6},t=[0-9]{1,2},p=[0-9]{1,2}\$[^$]+\$[^\s]{6,134}$"##,true));
-static PATTERN199 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$bitlocker\$[0-9]\$[0-9]{2}\$[a-f0-9]{32}\$[a-f0-9]{7}\$[a-f0-9]{2}\$[a-f0-9]{24}\$[a-f0-9]{2}\$[a-f0-9]{120}"##,true));
-static PATTERN200 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$racf\$\*.{1,}\*[A-F0-9]{16}"##,true));
-static PATTERN201 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$sshng\$4\$16\$[0-9]{32}\$1232\$[a-f0-9]{2464}$"##,true));
-static PATTERN202 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$RAR3\$\*(1)\*[0-9a-f]{1,16}\*[0-9a-f]{1,8}\*[0-9a-f]{1,16}\*[0-9a-f]{1,16}\*[01]\*([0-9a-f]+|[^*]{1,64}\*[0-9a-f]{1,16})\*30$"##,true));
-static PATTERN203 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$RAR3\$\*(1)\*[0-9a-f]{1,16}\*[0-9a-f]{1,8}\*[0-9a-f]{1,16}\*[0-9a-f]{1,16}\*[01]\*([0-9a-f]+|[^*]{1,64}\*[0-9a-f]{1,16})\*(31|32|33|34|35)$"##,true));
-static PATTERN204 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$RAR3\$\*0\*[0-9a-f]{1,16}\*[0-9a-f]+$"##,true));
-static PATTERN205 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$rar5\$[0-9a-f]{1,2}\$[0-9a-f]{1,32}\$[0-9a-f]{1,2}\$[0-9a-f]{1,32}\$[0-9a-f]{1,2}\$[0-9a-f]{1,16}$"##,true));
-static PATTERN206 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$keepass\$\*1\*\d+\*\d\*[0-9a-f]{32}\*[0-9a-f]{64}\*[0-9a-f]{32}\*[0-9a-f]{64}\*\d\*[^*]*(\*[0-9a-f]+)?$"##,true));
-static PATTERN207 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$keepass\$\*1\*\d+\*\d\*[0-9a-f]{32}\*[0-9a-f]{64}\*[0-9a-f]{32}\*[0-9a-f]{64}\*\d\*[^*]*(\*[0-9a-f]+)?\*\d+\*\d+\*[0-9a-f]{64}$"##,true));
-static PATTERN208 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$keepass\$\*2\*\d+\*\d+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+$"##,true));
-static PATTERN209 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$keepass\$\*2\*\d+\*\d+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*\d+\*\d+\*[0-9a-f]+$"##,true));
-static PATTERN210 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$odf\$\*1\*1\*100000\*32\*[a-f0-9]{64}\*16\*[a-f0-9]{32}\*16\*[a-f0-9]{32}\*0\*[a-f0-9]{2048}$"##,true));
-static PATTERN211 : Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*$"##,true));
+static PATTERN0: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{4}$"##, true));
+static PATTERN1: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{8}$"##, true));
+static PATTERN2: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{6}$"##, true));
+static PATTERN3: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^(\$crc32\$)?([a-f0-9]{8}.)?[a-f0-9]{8}$"##, true));
+static PATTERN4: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\+[a-z0-9\/.]{12}$"##, true));
+static PATTERN5: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{12}[.26AEIMQUYcgkosw]{1}$"##, true));
+static PATTERN6: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{16}$"##, true));
+static PATTERN7: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{16}:[a-f0-9]{0,30}$"##, true));
+static PATTERN8: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{16}$"##, true));
+static PATTERN9: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\([a-z0-9\/+]{20}\)$"##, true));
+static PATTERN10: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^_[a-z0-9\/.]{19}$"##, true));
+static PATTERN11: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{24}$"##, true));
+static PATTERN12: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$keepass\$\*1\*50000\*(0|1)\*([a-f0-9]{32})\*([a-f0-9]{64})\*([a-f0-9]{32})\*([a-f0-9]{64})\*1\*(192|1360)\*([a-f0-9]{384})$"##,
+        false,
+    )
+});
+static PATTERN13: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$keepass\$\*1\*6000\*(0|1)\*([a-f0-9]{32})\*([a-f0-9]{64})\*([a-f0-9]{32})\*([a-f0-9]{64})\*1\*(192|1360)\*([a-f0-9]{2720})\*1\*64\*([a-f0-9]{64})$"##,
+        false,
+    )
+});
+static PATTERN14: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$keepass\$\*2\*6000\*222(\*[a-f0-9]{64}){2}(\*[a-f0-9]{32}){1}(\*[a-f0-9]{64}){2}\*1\*64(\*[a-f0-9]{64}){1}$"##,
+        false,
+    )
+});
+static PATTERN15: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$keepass\$\*2\*6000\*222\*(([a-f0-9]{32,64})(\*)?)+$"##,
+        false,
+    )
+});
+static PATTERN16: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{24}$"##, true));
+static PATTERN17: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}$"##, true));
+static PATTERN18: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"(?:\$haval\$)?[a-f0-9]{32,64}$"##, true));
+static PATTERN19: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"(?:\$ripemd\$)?[a-f0-9]{32,40}$"##, true));
+static PATTERN20: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{16}$"##, true));
+static PATTERN21: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"(?:\$dynamic_39\$)?[a-f0-9]{32}\$[a-z0-9]{1,32}\$?[a-z0-9]{1,500}"##,
+        true,
+    )
+});
+static PATTERN22: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-z0-9]+$"##, true));
+static PATTERN23: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-z0-9]{56}$"##, true));
+static PATTERN24: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$md2\$)?[a-f0-9]{32}$"##, true));
+static PATTERN25: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$snefru\$)?[a-f0-9]{32}$"##, true));
+static PATTERN26: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$NT\$)?[a-f0-9]{32}$"##, true));
+static PATTERN27: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^([^\\\/:*?"<>|]{1,20}:)?[a-f0-9]{32}(:[^\\\/:*?"<>|]{1,20})?$"##,
+        true,
+    )
+});
+static PATTERN28: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^([^\\\/:*?"<>|]{1,20}:)?(\$DCC2\$10240#[^\\\/:*?"<>|]{1,20}#)?[a-f0-9]{32}$"##,
+        true,
+    )
+});
+static PATTERN29: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{SHA}[a-z0-9\/+]{27}=$"##, true));
+static PATTERN30: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$1\$[a-z0-9\/.]{0,8}\$[a-z0-9\/.]{22}(:.*)?$"##, true));
+static PATTERN31: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x[a-f0-9]{32}$"##, true));
+static PATTERN32: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$H\$[a-z0-9\/.]{31}$"##, true));
+static PATTERN33: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$P\$[a-z0-9\/.]{31}$"##, true));
+static PATTERN34: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-z0-9]{2}$"##, true));
+static PATTERN35: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$apr1\$[a-z0-9\/.]{0,8}\$[a-z0-9\/.]{22}$"##, true));
+static PATTERN36: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{smd5}[a-z0-9$\/.]{31}$"##, true));
+static PATTERN37: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:.{5}$"##, true));
+static PATTERN38: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:.{8}$"##, true));
+static PATTERN39: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9]{34}$"##, true));
+static PATTERN40: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}(:.+)?$"##, true));
+static PATTERN41: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}$"##, true));
+static PATTERN42: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9]{43}$"##, true));
+static PATTERN43: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{SSHA}[a-z0-9\/+]{38}==$"##, true));
+static PATTERN44: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9=]{47}$"##, true));
+static PATTERN45: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{48}$"##, true));
+static PATTERN46: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{51}$"##, true));
+static PATTERN47: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9]{51}$"##, true));
+static PATTERN48: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\{ssha1}[0-9]{2}\$[a-z0-9$\/.]{44}$"##, true));
+static PATTERN49: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x0100[a-f0-9]{48}$"##, true));
+static PATTERN50: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^(\$md5,rounds=[0-9]+\$|\$md5\$rounds=[0-9]+\$|\$md5\$)[a-z0-9\/.]{0,16}(\$|\$\$)[a-z0-9\/.]{22}$"##,
+        true,
+    )
+});
+static PATTERN51: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{56}$"##, true));
+static PATTERN52: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^(\$2[abxy]?|\$2)\$[0-9]{2}\$[a-z0-9\/.]{53}$"##, true));
+static PATTERN53: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$y\$[.\/A-Za-z0-9]+\$[.\/a-zA-Z0-9]+\$[.\/A-Za-z0-9]{43}$"##,
+        true,
+    )
+});
+static PATTERN54: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}:[a-f0-9]{16}$"##, true));
+static PATTERN55: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^(S:)?[a-f0-9]{40}(:)?[a-f0-9]{20}$"##, true));
+static PATTERN56: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$bcrypt-sha256\$(2[axy]|2)\,[0-9]+\$[a-z0-9\/.]{22}\$[a-z0-9\/.]{31}$"##,
+        true,
+    )
+});
+static PATTERN57: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:.{3}$"##, true));
+static PATTERN58: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:.{30}$"##, true));
+static PATTERN59: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$snefru\$)?[a-f0-9]{64}$"##, true));
+static PATTERN60: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{64}(:.+)?$"##, true));
+static PATTERN61: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-z0-9]{32}$"##, true));
+static PATTERN62: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{32}:[a-f0-9]{32}$"##, true));
+static PATTERN63: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^(\$chap\$0\*)?[a-f0-9]{32}[\*:][a-f0-9]{32}(:[0-9]{2})?$"##,
+        true,
+    )
+});
+static PATTERN64: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$episerver\$\*0\*[a-z0-9\/=+]+\*[a-z0-9\/=+]{27,28}$"##,
+        true,
+    )
+});
+static PATTERN65: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\{ssha256}[0-9]{2}\$[a-z0-9$\/.]{60}$"##, true));
+static PATTERN66: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{80}$"##, true));
+static PATTERN67: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$episerver\$\*1\*[a-z0-9\/=+]+\*[a-z0-9\/=+]{42,43}$"##,
+        true,
+    )
+});
+static PATTERN68: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x0100[a-f0-9]{88}$"##, true));
+static PATTERN69: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{96}$"##, true));
+static PATTERN70: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\{SSHA512}[a-z0-9\/+]{96}$"##, true));
+static PATTERN71: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\{ssha512}[0-9]{2}\$[a-z0-9\/.]{16,48}\$[a-z0-9\/.]{86}$"##,
+        true,
+    )
+});
+static PATTERN72: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{128}(:.+)?$"##, true));
+static PATTERN73: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{64}$"##, true));
+static PATTERN74: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{96}$"##, true));
+static PATTERN75: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{136}$"##, true));
+static PATTERN76: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^0x0200[a-f0-9]{136}$"##, true));
+static PATTERN77: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$ml\$[0-9]+\$[a-f0-9]{64}\$[a-f0-9]{128}$"##, true));
+static PATTERN78: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{256}$"##, true));
+static PATTERN79: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^grub\.pbkdf2\.sha512\.[0-9]+\.([a-f0-9]{128,2048}\.|[0-9]+\.)?[a-f0-9]{128}$"##,
+        true,
+    )
+});
+static PATTERN80: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^sha1\$[a-z0-9]+\$[a-f0-9]{40}$"##, true));
+static PATTERN81: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{49}$"##, true));
+static PATTERN82: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$S\$[a-z0-9\/.]{52}$"##, true));
+static PATTERN83: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$5\$(rounds=[0-9]+\$)?[a-z0-9\/.]{0,16}\$[a-z0-9\/.]{43}$"##,
+        true,
+    )
+});
+static PATTERN84: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^0x[a-f0-9]{4}[a-f0-9]{16}[a-f0-9]{64}$"##, true));
+static PATTERN85: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$6\$(rounds=[0-9]+\$)?[a-z0-9\/.]{0,16}\$[a-z0-9\/.]{86}$"##,
+        true,
+    )
+});
+static PATTERN86: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$sha\$[a-z0-9]{1,16}\$([a-f0-9]{32}|[a-f0-9]{40}|[a-f0-9]{64}|[a-f0-9]{128}|[a-f0-9]{140})$"##,
+        true,
+    )
+});
+static PATTERN87: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^sha256\$[a-z0-9]+\$[a-f0-9]{64}$"##, true));
+static PATTERN88: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^sha384\$[a-z0-9]+\$[a-f0-9]{96}$"##, true));
+static PATTERN89: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^crypt1:[a-z0-9+=]{12}:[a-z0-9+=]{12}$"##, true));
+static PATTERN90: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{112}$"##, true));
+static PATTERN91: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{1329}$"##, true));
+static PATTERN92: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^[^\\\/:*?"<>|]{1,20}[:]{2,3}([^\\\/:*?"<>|]{1,20})?:[a-f0-9]{48}:[a-f0-9]{48}:[a-f0-9]{16}$"##,
+        true,
+    )
+});
+static PATTERN93: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^([^\\\/:*?"<>|]{1,20}\\)?[^\\\/:*?"<>|]{1,20}[:]{2,3}([^\\\/:*?"<>|]{1,20}:)?[^\\\/:*?"<>|]{1,20}:[a-f0-9]{32}:[a-f0-9]+$"##,
+        true,
+    )
+});
+static PATTERN94: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$(krb5pa|mskrb5)\$(23)?\$.+\$[a-f0-9]{1,}$"##, true));
+static PATTERN95: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$scram\$[0-9]+\$[a-z0-9\/.]{16}\$sha-1=[a-z0-9\/.]{27},sha-256=[a-z0-9\/.]{43},sha-512=[a-z0-9\/.]{86}$"##,
+        true,
+    )
+});
+static PATTERN96: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}:[a-f0-9]{0,32}$"##, true));
+static PATTERN97: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^([^$]+)?\$[a-f0-9]{16}$"##, true));
+static PATTERN98: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(.+)?\$[a-f0-9]{40}$"##, true));
+static PATTERN99: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^(.+\$)?[a-z0-9\/.+]{30}(:.+)?$"##, true));
+static PATTERN100: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^0x(?:[a-f0-9]{60}|[a-f0-9]{40})$"##, true));
+static PATTERN101: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{40}:[^*]{1,25}$"##, true));
+static PATTERN102: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^(\$wbb3\$\*1\*)?[a-f0-9]{40}[:*][a-f0-9]{40}$"##, true));
+static PATTERN103: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^[a-f0-9]{130}(:[a-f0-9]{40})?$"##, true));
+static PATTERN104: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^[a-f0-9]{32}:[0-9]+:[a-z0-9_.+-]+@[a-z0-9-]+\.[a-z0-9-.]+$"##,
+        true,
+    )
+});
+static PATTERN105: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{16}([:$].{1,})?$"##, true));
+static PATTERN106: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$vnc\$\*[a-f0-9]{32}\*[a-f0-9]{32}$"##, true));
+static PATTERN107: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^[a-z0-9]{32}(:([a-z0-9-]+\.)?[a-z0-9-.]+\.[a-z]{2,7}:.+:[0-9]+)?$"##,
+        true,
+    )
+});
+static PATTERN108: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^(user-.+:)?\$racf\$\*.+\*[a-f0-9]{16}$"##, true));
+static PATTERN109: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$3\$\$[a-f0-9]{32}$"##, true));
+static PATTERN110: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$sha1\$[0-9]+\$[a-z0-9\/.]{0,64}\$[a-z0-9\/.]{28}$"##,
+        true,
+    )
+});
+static PATTERN111: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{70}$"##, true));
+static PATTERN112: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^[:\$][AB][:\$]([a-f0-9]{1,8}[:\$])?[a-f0-9]{32}$"##,
+        true,
+    )
+});
+static PATTERN113: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{140}$"##, true));
+static PATTERN114: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$pbkdf2(-sha1)?\$[0-9]+\$[a-z0-9\/.]+\$[a-z0-9\/.]{27}$"##,
+        true,
+    )
+});
+static PATTERN115: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$pbkdf2-sha256\$[0-9]+\$[a-z0-9\/.]+\$[a-z0-9\/.]{43}$"##,
+        true,
+    )
+});
+static PATTERN116: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$pbkdf2-sha512\$[0-9]+\$[a-z0-9\/.]+\$[a-z0-9\/.]{86}$"##,
+        true,
+    )
+});
+static PATTERN117: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$p5k2\$[0-9]+\$[a-z0-9\/+=-]+\$[a-z0-9\/+-]{27}=$"##,
+        true,
+    )
+});
+static PATTERN118: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$p5k2\$[0-9]+\$[a-z0-9\/.]+\$[a-z0-9\/.]{32}$"##, true));
+static PATTERN119: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\{FSHP[0123]\|[0-9]+\|[0-9]+}[a-z0-9\/+=]+$"##, true));
+static PATTERN120: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\$PHPS\$.+\$[a-f0-9]{32}$"##, true));
+static PATTERN121: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^[0-9]{4}:[a-f0-9]{16}:[a-f0-9]{2080}$"##, true));
+static PATTERN122: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^[a-f0-9]{64}:[a-f0-9]{32}:[0-9]{5}:[a-f0-9]{608}$"##,
+        true,
+    )
+});
+static PATTERN123: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^[a-f0-9]{256}:[a-f0-9]{256}:[a-f0-9]{16}:[a-f0-9]{16}:[a-f0-9]{320}:[a-f0-9]{16}:[a-f0-9]{40}:[a-f0-9]{40}:[a-f0-9]{32}$"##,
+        true,
+    )
+});
+static PATTERN124: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^[a-f0-9]{256}:[a-f0-9]{256}:[a-f0-9]{16}:[a-f0-9]{16}:[a-f0-9]{320}:[a-f0-9]{16}:[a-f0-9]{40}:[a-f0-9]{40}:[a-f0-9]{40}$"##,
+        true,
+    )
+});
+static PATTERN125: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/+]{27}=$"##, true));
+static PATTERN126: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^crypt\$[a-f0-9]{5}\$[a-z0-9\/.]{13}$"##, true));
+static PATTERN127: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^(\$django\$\*1\*)?pbkdf2_sha256\$[0-9]+\$[a-z0-9]+\$[a-z0-9\/+=]{44}$"##,
+        true,
+    )
+});
+static PATTERN128: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^pbkdf2_sha1\$[0-9]+\$[a-z0-9]+\$[a-z0-9\/+=]{28}$"##,
+        true,
+    )
+});
+static PATTERN129: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^bcrypt(\$2[axy]|\$2)\$[0-9]{2}\$[a-z0-9\/.]{53}$"##,
+        true,
+    )
+});
+static PATTERN130: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^md5\$[a-f0-9]+\$[a-f0-9]{32}$"##, true));
+static PATTERN131: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\{PKCS5S2\}[a-z0-9\/+]{64}$"##, true));
+static PATTERN132: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^md5[a-f0-9]{32}$"##, true));
+static PATTERN133: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^\([a-z0-9\/+]{49}\)$"##, true));
+static PATTERN134: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^SCRYPT:[0-9]{1,}:[0-9]{1}:[0-9]{1}:[a-z0-9:\/+=]{1,}$"##,
+        true,
+    )
+});
+static PATTERN135: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$8\$[a-z0-9\/.]{14}\$[a-z0-9\/.]{43}$"##, true));
+static PATTERN136: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$9\$[a-z0-9\/.]{14}\$[a-z0-9\/.]{43}$"##, true));
+static PATTERN137: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$office\$\*2007\*[0-9]{2}\*[0-9]{3}\*[0-9]{2}\*[a-z0-9]{32}\*[a-z0-9]{32}\*[a-z0-9]{40}$"##,
+        true,
+    )
+});
+static PATTERN138: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$office\$\*2010\*[0-9]{6}\*[0-9]{3}\*[0-9]{2}\*[a-z0-9]{32}\*[a-z0-9]{32}\*[a-z0-9]{64}$"##,
+        true,
+    )
+});
+static PATTERN139: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\\$office\\$2016\\$[0-9]\\$[0-9]{6}\\$[^$]{24}\\$[^$]{88}$"##,
+        true,
+    )
+});
+static PATTERN140: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$office\$\*2013\*[0-9]{6}\*[0-9]{3}\*[0-9]{2}\*[a-z0-9]{32}\*[a-z0-9]{32}\*[a-z0-9]{64}$"##,
+        true,
+    )
+});
+static PATTERN141: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$fde\$[0-9]{2}\$[a-f0-9]{32}\$[0-9]{2}\$[a-f0-9]{32}\$[a-f0-9]{3072}$"##,
+        true,
+    )
+});
+static PATTERN142: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$krb5tgs\$23\$\*[^*]*\*\$[a-f0-9]{32}\$[a-f0-9]{64,40960}"##,
+        true,
+    )
+});
+static PATTERN143: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$oldoffice\$[01]\*[a-f0-9]{32}\*[a-f0-9]{32}\*[a-f0-9]{32}$"##,
+        true,
+    )
+});
+static PATTERN144: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$oldoffice\$[34]\*[a-f0-9]{32}\*[a-f0-9]{32}\*[a-f0-9]{40}$"##,
+        true,
+    )
+});
+static PATTERN145: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$oldoffice\$[34]\*[a-f0-9]{32}\*[a-f0-9]{32}\*[a-f0-9]{40}:[a-f0-9]{10}"##,
+        true,
+    )
+});
+static PATTERN146: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^(\$radmin2\$)?[a-f0-9]{32}$"##, true));
+static PATTERN147: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\{x-issha,\s[0-9]{4}}[a-z0-9\/+=]+$"##, true));
+static PATTERN148: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$cram_md5\$[a-z0-9\/+=-]+\$[a-z0-9\/+=-]{52}$"##, true));
+static PATTERN149: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^[a-f0-9]{16}:2:4:[a-f0-9]{32}$"##, true));
+static PATTERN150: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-f0-9]{4,}$"##, true));
+static PATTERN151: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^[a-z0-9\/.]{13,}$"##, true));
+static PATTERN152: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^(\$cisco4\$)?[a-z0-9\/.]{43}$"##, true));
+static PATTERN153: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^bcrypt_sha256\$\$(2[axy]|2)\$[0-9]+\$[a-z0-9\/.]{53}$"##,
+        true,
+    )
+});
+static PATTERN154: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$postgres\$.[^\*]+[*:][a-f0-9]{1,32}[*:][a-f0-9]{32}$"##,
+        true,
+    )
+});
+static PATTERN155: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$siemens-s7\$[0-9]{1}\$[a-f0-9]{40}\$[a-f0-9]{40}$"##,
+        true,
+    )
+});
+static PATTERN156: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$pst\$)?[a-f0-9]{8}$"##, true));
+static PATTERN157: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^sha256[:$][0-9]+[:$][a-z0-9\/+=]+[:$][a-z0-9\/+]{32,128}$"##,
+        true,
+    )
+});
+static PATTERN158: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"^(\$dahua\$)?[a-z0-9]{8}$"##, true));
+static PATTERN159: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$mysqlna\$[a-f0-9]{40}[:*][a-f0-9]{40}$"##, true));
+static PATTERN160: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$pdf\$1\*[2|3]\*[0-9]{2}\*[-0-9]{1,6}\*[0-9]\*[0-9]{2}\*[a-f0-9]{32,32}\*[0-9]{2}\*[a-f0-9]{64}\*[0-9]{2}\*[a-f0-9]{64}"##,
+        true,
+    )
+});
+static PATTERN161: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$pdf\$1\*[2|3]\*[0-9]{2}\*[-0-9]{1,6}\*[0-9]\*[0-9]{2}\*[a-f0-9]{32}\*[0-9]{2}\*[a-f0-9]{64}\*[0-9]{2}\*[a-f0-9]{64}:[a-f0-9]{10}"##,
+        true,
+    )
+});
+static PATTERN162: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$pdf\$[24]\*[34]\*128\*[0-9-]{1,5}\*1\*(16|32)\*[a-f0-9]{32,64}\*32\*[a-f0-9]{64}\*(8|16|32)\*[a-f0-9]{16,64}$"##,
+        true,
+    )
+});
+static PATTERN163: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$pdf\$5\*[5|6]\*[0-9]{3}\*[-0-9]{1,6}\*[0-9]\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}"##,
+        true,
+    )
+});
+static PATTERN164: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$pdf\$5\*[5|6]\*[0-9]{3}\*[-0-9]{1,6}\*[0-9]\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}\*[0-9]{1,4}\*[a-f0-9]{0,1024}"##,
+        true,
+    )
+});
+static PATTERN165: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$krb5asrep\$23\$[^:]+:[a-f0-9]{32,32}\$[a-f0-9]{64,40960}$"##,
+        true,
+    )
+});
+static PATTERN166: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$krb5tgs\$17\$[^$]{1,512}\$[^$]{1,512}\$[^$]{1,4}?\$?[a-f0-9]{1,32}\$[a-f0-9]{64,40960}$"##,
+        true,
+    )
+});
+static PATTERN167: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$krb5tgs\$18\$[^$]{1,512}\$[^$]{1,512}\$[^$]{1,4}?\$?[a-f0-9]{1,32}\$[a-f0-9]{64,40960}"##,
+        true,
+    )
+});
+static PATTERN168: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$krb5pa\$17\$[^$]{1,512}\$[^$]{1,512}\$[a-f0-9]{104,112}$"##,
+        true,
+    )
+});
+static PATTERN169: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$krb5pa\$17\$[^$]{1,512}\$[^$]{1,512}\$[^$]{0,512}\$[a-f0-9]{104,112}$"##,
+        true,
+    )
+});
+static PATTERN170: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$krb5pa\$18\$[^$]{1,512}\$[^$]{1,512}\$[^$]{0,512}\$[a-f0-9]{104,112}$"##,
+        true,
+    )
+});
+static PATTERN171: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$krb5pa\$18\$[^$]{1,512}\$[^$]{1,512}\$[a-f0-9]{104,112}$"##,
+        true,
+    )
+});
+static PATTERN172: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"\$bitcoin\$[0-9]{2,4}\$[a-f0-9$]{250,350}"##, true));
+static PATTERN173: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"\$ethereum\$[a-z0-9*]{150,250}"##, true));
+static PATTERN174: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"\$monero\$(0)\*[a-f0-9]{32,3196}"##, true));
+static PATTERN175: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$electrum\$[1-3]\*[a-f0-9]{32,32}\*[a-f0-9]{32,32}$"##,
+        true,
+    )
+});
+static PATTERN176: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$electrum\$4\*[a-f0-9]{1,66}\*[a-f0-9]{128,32768}\*[a-f0-9]{64,64}$"##,
+        true,
+    )
+});
+static PATTERN177: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$electrum\$5\*[a-f0-9]{66,66}\*[a-f0-9]{2048,2048}\*[a-f0-9]{64,64}$"##,
+        true,
+    )
+});
+static PATTERN178: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$ab\$[0-9]{1}\*[0-9]{1}\*[0-9]{1,6}\*[a-f0-9]{128}\*[a-f0-9]{128}\*[a-f0-9]{32}\*[a-f0-9]{192}"##,
+        true,
+    )
+});
+static PATTERN179: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$zip2\$\*[0-9]{1}\*[0-9]{1}\*[0-9]{1}\*[a-f0-9]{16,32}\*[a-f0-9]{1,6}\*[a-f0-9]{1,6}\*[a-f0-9]+\*[a-f0-9]{20}\*\$\/zip2\$"##,
+        true,
+    )
+});
+static PATTERN180: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$itunes_backup\$\*[0-9]{1,2}\*[a-f0-9]{80}\*[0-9]{1,6}\*[a-f0-9]{40}\*[0-9]{0,10}\*[a-f0-9]{0,40}"##,
+        true,
+    )
+});
+static PATTERN181: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$telegram\$[a-f0-9*]{99}"##, true));
+static PATTERN182: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\\$telegram\\$1\\*4000\\*[a-f0-9]{64}\\*[a-f0-9]{576}$"##,
+        true,
+    )
+});
+static PATTERN183: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\\$telegram\\$2\\*100000\\*[a-f0-9]{64}\\*[a-f0-9]{576}$"##,
+        true,
+    )
+});
+static PATTERN184: Lazy<Regex> = Lazy::new(|| regex_no_u(r##"\$BLAKE2\$[a-f0-9]{128}"##, true));
+static PATTERN185: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"\$oldoffice\$[a-f0-9*]{100}:[a-f0-9]{10}"##, true));
+static PATTERN186: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$office\$2016\$[0-9]\$[0-9]{6}\$[^$]{24}\$[^$]{88}"##,
+        true,
+    )
+});
+static PATTERN187: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$7z\$[0-9]\$[0-9]{1,2}\$[0-9]{1}\$[^$]{0,64}\$[0-9]{1,2}\$[a-f0-9]{32}\$[0-9]{1,10}\$[0-9]{1,6}\$[0-9]{1,6}\$[a-f0-9]{2,}"##,
+        true,
+    )
+});
+static PATTERN188: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$zip3\$\*[0-9]\*[0-9]\*256\*[0-9]\*[a-f0-9]{0,32}\*[a-f0-9]{288}\*[0-9]\*[0-9]\*[0-9]\*[^\s]{0,64}"##,
+        true,
+    )
+});
+static PATTERN189: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$zip3\$\*[0-9]\*[0-9]\*192\*[0-9]\*[a-f0-9]{0,32}\*[a-f0-9]{288}\*[0-9]\*[0-9]\*[0-9]\*[^\s]{0,64}"##,
+        true,
+    )
+});
+static PATTERN190: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$zip3\$\*[0-9]\*[0-9]\*128\*[0-9]\*[a-f0-9]{0,32}\*[a-f0-9]{288}\*[0-9]\*[0-9]\*[0-9]\*[^\s]{0,64}"##,
+        true,
+    )
+});
+static PATTERN191: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$pkzip2?\$(1)\*[0-9]{1}\*[0-9]{1}\*[0-9a-f]{1,3}\*[0-9a-f]{1,8}\*[0-9a-f]{1,4}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*(8)\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[a-f0-9]+\*\$\/pkzip2?\$$"##,
+        true,
+    )
+});
+static PATTERN192: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$pkzip2?\$(1)\*[0-9]{1}\*[0-9]{1}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}\*(0)\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[a-f0-9]+\*\$\/pkzip2?\$$"##,
+        true,
+    )
+});
+static PATTERN193: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$pkzip2?\$([2-8])\*[0-9]{1}(\*[0-9]{1}\*[0-9a-f]{1,3}\*([^0*][0-9a-f]{0,2})\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[0-9a-f]+)+\*(8)\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[a-f0-9]+\*\$\/pkzip2?\$$"##,
+        true,
+    )
+});
+static PATTERN194: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$pkzip2?\$([2-8])\*[0-9]{1}(\*[0-9]{1}\*[0-9a-f]{1,8}\*([0-9a-f]{1,8})\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[0-9a-f]+)+\*([08])\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[a-f0-9]+\*\$\/pkzip2?\$$"##,
+        true,
+    )
+});
+static PATTERN195: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$pkzip2?\$([2-8])\*[0-9]{1}(\*[0-9]{1}\*[0-9a-f]{1,3}\*[0-9a-f]{1,8}\*[0-9a-f]{1,8}(\*[0-9a-f]{1,8})?\*[0-9a-f]{1,8}\*[0-9a-f]+)+\*\$\/pkzip2?\$$"##,
+        true,
+    )
+});
+static PATTERN196: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$argon2i\$v=19\$m=[0-9]{1,6},t=[0-9]{1,2},p=[0-9]{1,2}\$[^$]+\$[^\s]{6,134}$"##,
+        true,
+    )
+});
+static PATTERN197: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$argon2id\$v=19\$m=[0-9]{1,6},t=[0-9]{1,2},p=[0-9]{1,2}\$[^$]+\$[^\s]{6,134}$"##,
+        true,
+    )
+});
+static PATTERN198: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$argon2d\$v=19\$m=[0-9]{1,6},t=[0-9]{1,2},p=[0-9]{1,2}\$[^$]+\$[^\s]{6,134}$"##,
+        true,
+    )
+});
+static PATTERN199: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"\$bitlocker\$[0-9]\$[0-9]{2}\$[a-f0-9]{32}\$[a-f0-9]{7}\$[a-f0-9]{2}\$[a-f0-9]{24}\$[a-f0-9]{2}\$[a-f0-9]{120}"##,
+        true,
+    )
+});
+static PATTERN200: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"\$racf\$\*.{1,}\*[A-F0-9]{16}"##, true));
+static PATTERN201: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$sshng\$4\$16\$[0-9]{32}\$1232\$[a-f0-9]{2464}$"##,
+        true,
+    )
+});
+static PATTERN202: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$RAR3\$\*(1)\*[0-9a-f]{1,16}\*[0-9a-f]{1,8}\*[0-9a-f]{1,16}\*[0-9a-f]{1,16}\*[01]\*([0-9a-f]+|[^*]{1,64}\*[0-9a-f]{1,16})\*30$"##,
+        true,
+    )
+});
+static PATTERN203: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$RAR3\$\*(1)\*[0-9a-f]{1,16}\*[0-9a-f]{1,8}\*[0-9a-f]{1,16}\*[0-9a-f]{1,16}\*[01]\*([0-9a-f]+|[^*]{1,64}\*[0-9a-f]{1,16})\*(31|32|33|34|35)$"##,
+        true,
+    )
+});
+static PATTERN204: Lazy<Regex> =
+    Lazy::new(|| regex_no_u(r##"^\$RAR3\$\*0\*[0-9a-f]{1,16}\*[0-9a-f]+$"##, true));
+static PATTERN205: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$rar5\$[0-9a-f]{1,2}\$[0-9a-f]{1,32}\$[0-9a-f]{1,2}\$[0-9a-f]{1,32}\$[0-9a-f]{1,2}\$[0-9a-f]{1,16}$"##,
+        true,
+    )
+});
+static PATTERN206: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$keepass\$\*1\*\d+\*\d\*[0-9a-f]{32}\*[0-9a-f]{64}\*[0-9a-f]{32}\*[0-9a-f]{64}\*\d\*[^*]*(\*[0-9a-f]+)?$"##,
+        true,
+    )
+});
+static PATTERN207: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$keepass\$\*1\*\d+\*\d\*[0-9a-f]{32}\*[0-9a-f]{64}\*[0-9a-f]{32}\*[0-9a-f]{64}\*\d\*[^*]*(\*[0-9a-f]+)?\*\d+\*\d+\*[0-9a-f]{64}$"##,
+        true,
+    )
+});
+static PATTERN208: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$keepass\$\*2\*\d+\*\d+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+$"##,
+        true,
+    )
+});
+static PATTERN209: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$keepass\$\*2\*\d+\*\d+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*[0-9a-f]+\*\d+\*\d+\*[0-9a-f]+$"##,
+        true,
+    )
+});
+static PATTERN210: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^\$odf\$\*1\*1\*100000\*32\*[a-f0-9]{64}\*16\*[a-f0-9]{32}\*16\*[a-f0-9]{32}\*0\*[a-f0-9]{2048}$"##,
+        true,
+    )
+});
+static PATTERN211: Lazy<Regex> = Lazy::new(|| {
+    regex_no_u(
+        r##"^[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*\.[A-Za-z0-9-_]*$"##,
+        true,
+    )
+});
 
-pub static PATTERNS : Lazy<Vec<Pattern>> = Lazy::new(|| vec![
+pub static PATTERNS: Lazy<Vec<Pattern>> = Lazy::new(|| {
+    vec![
         Pattern { regex: &*PATTERN0, modes: vec![
                 HashInfo{ name: "CRC-16", john: None ,hashcat: None ,variation: false ,description: None, popular: false },
                 HashInfo{ name: "CRC-16-CCITT", john: None ,hashcat: None ,variation: false ,description: None, popular: false },
@@ -1029,7 +1545,8 @@ pub static PATTERNS : Lazy<Vec<Pattern>> = Lazy::new(|| vec![
       ]},
         Pattern { regex: &*PATTERN211, modes: vec![
                 HashInfo{ name: "JWT (JSON Web Token)", john: None ,hashcat: Some("16500") ,variation: false ,description: None, popular: false },
-      ]}]);
+      ]}]
+});
 
 #[derive(Debug)]
 pub struct HashInfo {
@@ -1051,24 +1568,30 @@ pub struct HashIdentifier<'a> {
 }
 
 impl<'a> HashIdentifier<'a> {
-    pub fn new(patterns: &'a Vec<Pattern>) -> Self {
-        Self { patterns }
+    pub fn new() -> Self {
+        Self {
+            patterns: &*PATTERNS,
+        }
     }
-    pub fn match_pattern(&self, input: &str) -> (Vec<&HashInfo>,Vec<&HashInfo>) {
-        let mut possible = vec![];
-        let mut probable: Vec<&HashInfo> = vec![];
+    pub fn match_pattern(&self, input: &str) -> (Vec<&HashInfo>, Vec<&HashInfo>) {
+        let mut popular: Vec<&HashInfo> = vec![];
+        let mut regular: Vec<&HashInfo> = vec![];
         for pattern in self.patterns {
-            if pattern.regex.is_match(input.as_bytes()).expect("regex error") {
+            if pattern
+                .regex
+                .is_match(input.as_bytes())
+                .expect("regex error")
+            {
                 for x in &pattern.modes {
-                        if x.popular {
-                                probable.push(x);
-                        }
-                        else {
-                                possible.push(x);
-                        }
+                    if x.popular {
+                        popular.push(x);
+                    } else {
+                        regular.push(x);
+                    }
                 }
             }
         }
-        (possible,probable)
+        (popular, regular)
     }
 }
+
