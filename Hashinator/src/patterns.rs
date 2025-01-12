@@ -1567,31 +1567,39 @@ pub struct HashIdentifier<'a> {
     pub patterns: &'a Vec<Pattern>,
 }
 
+#[derive(Debug)]
+pub struct IdentifiedHashes<'a> {
+    pub hashname: String,
+    pub popular: Vec<&'a HashInfo>,
+    pub unpopular: Vec<&'a HashInfo>,
+}
+
+impl<'a> IdentifiedHashes<'a> {
+    fn new(input: &str) -> Self {
+        Self { hashname: input.to_string(), popular: Vec::new(), unpopular: Vec::new() }
+    }
+}
+
 impl<'a> HashIdentifier<'a> {
     pub fn new() -> Self {
         Self {
             patterns: &*PATTERNS,
         }
     }
-    pub fn match_pattern(&self, input: &str) -> (Vec<&HashInfo>, Vec<&HashInfo>) {
-        let mut popular: Vec<&HashInfo> = vec![];
-        let mut regular: Vec<&HashInfo> = vec![];
-        for pattern in self.patterns {
-            if pattern
-                .regex
-                .is_match(input.as_bytes())
-                .expect("regex error")
-            {
-                for x in &pattern.modes {
-                    if x.popular {
-                        popular.push(x);
-                    } else {
-                        regular.push(x);
-                    }
-                }
+    pub fn is_match(&self, input: &str) -> IdentifiedHashes {
+        let correct: Vec<&HashInfo> = self.patterns.iter().filter_map(|pattern| match pattern.regex.is_match(input.as_bytes()) {
+            Ok(true) => Some(pattern),
+            Ok(false) => None,
+            Err(e) => {
+                eprintln!("Error {}",e);
+                std::process::exit(1);
             }
-        }
-        (popular, regular)
+        }).flat_map(|pattern| pattern.modes.iter()).collect();
+        let mut output: IdentifiedHashes = IdentifiedHashes::new(input);
+        correct.into_iter().for_each(|hashinfo| match hashinfo.popular {
+            true => output.popular.push(hashinfo),
+            false => output.unpopular.push(hashinfo),
+        });
+        output
     }
 }
-

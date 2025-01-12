@@ -1,0 +1,1 @@
+Flatten<Filter<std::slice::Iter<'_, patterns::Pattern>, {closure@src/patterns.rs:1579:67: 1579:76}>>

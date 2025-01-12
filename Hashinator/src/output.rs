@@ -1,64 +1,97 @@
-use crate::patterns::HashInfo;
+use crate::patterns::{HashInfo, IdentifiedHashes};
 
-const BANNER: &str = "
+pub const BANNER: &str = "
 ██╗  ██╗ █████╗ ███████╗██╗  ██╗██╗███╗   ██╗ █████╗ ████████╗ ██████╗ ██████╗ 
 ██║  ██║██╔══██╗██╔════╝██║  ██║██║████╗  ██║██╔══██╗╚══██╔══╝██╔═══██╗██╔══██╗
 ███████║███████║███████╗███████║██║██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝
 ██╔══██║██╔══██║╚════██║██╔══██║██║██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗
 ██║  ██║██║  ██║███████║██║  ██║██║██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║
 ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
-https://github.com/North004
+https://github.com/North004/Hashinator
 ";
 
-pub fn welcome(banner: bool, hash: &str) {
-    if !banner {
-        println!("{BANNER}")
-    }
-    println!("Hash: {hash}")
+pub fn banner() {
+    println!("{BANNER}");
 }
 
-pub fn output_line(hash: &HashInfo, symbol: &str) {
-    println!("[{}] {}", symbol, hash.name,);
-}
+pub fn print_hash_info_tags(hash: &HashInfo) {
+    let hashcat = hash.hashcat.unwrap_or("N/A");
+    let john = hash.john.unwrap_or("N/A"); 
+    let summary = hash.description.unwrap_or("N/A"); 
 
-pub fn output_line_tags(hash: &HashInfo, symbol: &str) {
-    let hashcat: String = match hash.hashcat {
-        Some(x) => format!("Hashcat: {}", x),
-        _ => "".to_string(),
-    };
-    let john: String = match hash.john {
-        Some(x) => format!("John: {}", x),
-        _ => "".to_string(),
-    };
-    let summary: String = match hash.description {
-        Some(x) => format!("Summary: {}", x),
-        _ => "".to_string(),
-    };
     println!(
-        "[{}] {}   {}   {}   {}",
-        symbol, hash.name, hashcat, john, summary
+        "[+] {}     Hashcat: {}     John: {}     Summary: {}",
+        hash.name, hashcat, john, summary
     );
 }
 
-pub fn output_collection<F: Fn(&HashInfo, &str)>(
-    collection: Vec<&HashInfo>,
-    symbol: &str,
-    func: F,
-) {
-    for hash in collection {
-        func(hash, symbol);
-    }
+pub fn print_hash_info_tags_align(hash: &HashInfo) {
+    let hashcat = hash.hashcat.unwrap_or("N/A");
+    let john = hash.john.unwrap_or("N/A"); 
+    let summary = hash.description.unwrap_or("N/A"); 
+
+    println!(
+        "[+] {:<30}Hashcat: {:<10}John: {:<20}Summary: {:<30}",
+        hash.name, hashcat, john, summary
+    );
 }
 
-pub fn output_complete(total: (Vec<&HashInfo>, Vec<&HashInfo>)) {
-    if !total.0.is_empty() {
+pub fn print_hash_info(hash: &HashInfo) {
+    print!("{}",hash.name);
+}
+pub fn output_complete(total: IdentifiedHashes,verbosity: u8) {
+    println!("Identifying matches for: {}",total.hashname);
+    if !total.popular.is_empty() {
         println!();
         println!("Most likley Hash functions");
-        output_collection(total.0, "+", output_line_tags);
+        println!("--------------------------");
+        match verbosity {
+            0 => {
+                let mut split = false;
+                for hash in total.popular{
+                    if split { print!(", ")}
+                    print_hash_info(hash);
+                    split = true;
+                }
+            },
+            1 => {
+                for hash in total.popular {
+                    print_hash_info_tags(hash);
+                }
+            }
+            _ => {
+                for hash in total.popular {
+                    print_hash_info_tags_align(hash);
+                }
+            }
+    };
     }
     println!();
-    if !total.1.is_empty() {
+    if !total.unpopular.is_empty() {
         println!("Likley Hashes functions");
-        output_collection(total.1, "-", output_line);
+        println!("-----------------------");
+        match verbosity {
+                0 => {
+                    let mut split = false;
+                    for hash in total.unpopular {
+                        if split { print!(", ")}
+                        print_hash_info(hash);
+                        split = true;
+                    }
+                },
+                1 => {
+                    for hash in total.unpopular {
+                        print_hash_info_tags(hash);
+                    }
+                }
+                _ => {
+                    for hash in total.unpopular {
+                        print_hash_info_tags_align(hash);
+                    }
+                }
+        };
     }
+        
+    
+    println!();
 }
