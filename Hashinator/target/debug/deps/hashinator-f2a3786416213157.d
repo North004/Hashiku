@@ -1,6 +1,6 @@
-/home/jamie/Documents/Github/Hashiku/Hashiku/target/debug/deps/libhashinator-f2a3786416213157.rmeta: src/main.rs src/output.rs src/patterns.rs Cargo.toml
+/home/jamie/Documents/Github/Hashinator/Hashinator/target/debug/deps/libhashinator-f2a3786416213157.rmeta: src/main.rs src/output.rs src/patterns.rs Cargo.toml
 
-/home/jamie/Documents/Github/Hashiku/Hashiku/target/debug/deps/hashinator-f2a3786416213157.d: src/main.rs src/output.rs src/patterns.rs Cargo.toml
+/home/jamie/Documents/Github/Hashinator/Hashinator/target/debug/deps/hashinator-f2a3786416213157.d: src/main.rs src/output.rs src/patterns.rs Cargo.toml
 
 src/main.rs:
 src/output.rs:

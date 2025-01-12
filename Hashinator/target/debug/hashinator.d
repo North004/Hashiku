@@ -1,1 +1,1 @@
-/home/jamie/Documents/Github/Hashiku/Hashiku/target/debug/hashinator: /home/jamie/Documents/Github/Hashiku/Hashiku/src/main.rs /home/jamie/Documents/Github/Hashiku/Hashiku/src/output.rs /home/jamie/Documents/Github/Hashiku/Hashiku/src/patterns.rs
+/home/jamie/Documents/Github/Hashinator/Hashinator/target/debug/hashinator: /home/jamie/Documents/Github/Hashinator/Hashinator/src/main.rs /home/jamie/Documents/Github/Hashinator/Hashinator/src/output.rs /home/jamie/Documents/Github/Hashinator/Hashinator/src/patterns.rs

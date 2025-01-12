@@ -6,7 +6,9 @@ const BANNER: &str = "
 ███████║███████║███████╗███████║██║██╔██╗ ██║███████║   ██║   ██║   ██║██████╔╝
 ██╔══██║██╔══██║╚════██║██╔══██║██║██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗
 ██║  ██║██║  ██║███████║██║  ██║██║██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║
-╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝";
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
+https://github.com/North004
+";
 
 pub fn welcome(banner: bool, hash: &str) {
     if !banner {
@@ -33,7 +35,7 @@ pub fn output_line_tags(hash: &HashInfo, symbol: &str) {
         _ => "".to_string(),
     };
     println!(
-        "[{}] {}  {}  {}  {}",
+        "[{}] {}   {}   {}   {}",
         symbol, hash.name, hashcat, john, summary
     );
 }
@@ -49,8 +51,8 @@ pub fn output_collection<F: Fn(&HashInfo, &str)>(
 }
 
 pub fn output_complete(total: (Vec<&HashInfo>, Vec<&HashInfo>)) {
-    println!();
     if !total.0.is_empty() {
+        println!();
         println!("Most likley Hash functions");
         output_collection(total.0, "+", output_line_tags);
     }
