@@ -25,16 +25,6 @@ pub fn print_hash_info_tags(hash: &HashInfo) {
     );
 }
 
-pub fn print_hash_info_tags_align(hash: &HashInfo) {
-    let hashcat = hash.hashcat.unwrap_or("N/A");
-    let john = hash.john.unwrap_or("N/A"); 
-    let summary = hash.description.unwrap_or("N/A"); 
-
-    println!(
-        "[+] {:<30}Hashcat: {:<10}John: {:<20}Summary: {:<30}",
-        hash.name, hashcat, john, summary
-    );
-}
 
 pub fn print_hash_info(hash: &HashInfo) {
     print!("{}",hash.name);
@@ -54,14 +44,9 @@ pub fn output_complete(total: IdentifiedHashes,verbosity: u8) {
                     split = true;
                 }
             },
-            1 => {
-                for hash in total.popular {
-                    print_hash_info_tags(hash);
-                }
-            }
             _ => {
                 for hash in total.popular {
-                    print_hash_info_tags_align(hash);
+                    print_hash_info_tags(hash);
                 }
             }
     };
@@ -79,14 +64,9 @@ pub fn output_complete(total: IdentifiedHashes,verbosity: u8) {
                         split = true;
                     }
                 },
-                1 => {
-                    for hash in total.unpopular {
-                        print_hash_info_tags(hash);
-                    }
-                }
                 _ => {
                     for hash in total.unpopular {
-                        print_hash_info_tags_align(hash);
+                        print_hash_info_tags(hash);
                     }
                 }
         };

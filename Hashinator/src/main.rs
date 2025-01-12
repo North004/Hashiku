@@ -28,7 +28,6 @@ pub struct Args {
 fn main() {
     let hash = HashIdentifier::new();
     let args = Args::parse();
-    println!("{}",args.verbosity);
     match args.nobanner {
         false => output::banner(),
         _ => (),
