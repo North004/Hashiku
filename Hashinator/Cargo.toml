@@ -4,7 +4,7 @@ version = "1.0.0"
 edition = "2021"
 description = "A tool to identify hashes blazingly fast"
 repository = "https://github.com/North004/Hashinator"
-licence = "MIT"
+license = "MIT"
 
 [dependencies]
 clap = { version = "4.5.26", features = ["derive"] }
