@@ -45,7 +45,8 @@ fn main() {
         .group(
             clap::ArgGroup::new("input")
                 .args(["text", "file"]) // Grouping the arguments
-                .required(true), // Ensures at least one is provided
+                .required(true)
+                .multiple(false), // Ensures at least one is provided
         )
         .get_matches();
 

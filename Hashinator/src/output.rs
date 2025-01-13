@@ -35,9 +35,14 @@ pub fn print_hash_info(hash: &HashInfo) {
 }
 
 pub fn output_complete(total: IdentifiedHashes, verbosity: u8) {
-    println!("{}: {}\n", "Hash".bold().blue(), total.hashname.red());
+    if total.popular.is_empty() && total.unpopular.is_empty() {
+        println!("{}: {}", "NO MATCHES FOUND FOR".bold().blue(), total.hashname.red());
+    }
+    else { 
+        println!("{}: {}", "Hash".bold().blue(), total.hashname.red());
+    }
     if !total.popular.is_empty() {
-        println!("{}", "Most likely Hash functions".bold().underline().blue()); // Title in bold, underlined green
+        println!("\n{}", "Most likely Hash functions".bold().underline().blue()); // Title in bold, underlined green
         for hash in total.popular {
             print_hash_info_tags(hash);
         }
