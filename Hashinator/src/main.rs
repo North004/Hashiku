@@ -14,6 +14,7 @@ fn main() {
         .about("A program to identify hashes blazingly fast")
         .arg(
             Arg::new("text")
+                .allow_hyphen_values(true)
                 .short('t')
                 .long("text")
                 .value_name("TEXT")
