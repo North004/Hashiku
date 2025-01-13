@@ -2,7 +2,7 @@
 
 🔥 A blazingly fast tool for identifyig hashes
 
-[Alt text](example.png)
+[Alt text](./example.png)
 
 ## Table of Contents
 - [About](#about)
