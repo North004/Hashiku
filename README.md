@@ -15,7 +15,9 @@
 
 
 ## Installation 
-I dont know 
+```
+cargo install hashinator
+```
 ## Usage
 ```
 hashinator -t 1bc43a00ffd1a6ac361dae94f46cdc44
