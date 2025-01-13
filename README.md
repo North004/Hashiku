@@ -1,6 +1,6 @@
 # Hashinator
 
-🔥 A blazingly fast tool for identifyig hashes
+🔥 The fastest hash identification tool ( i could find )
 
 <img src="example.png" class="img-responsive" alt=""> </div>
 
