@@ -733,7 +733,7 @@ static PATTERN211: Lazy<Regex> = Lazy::new(|| {
     )
 });
 
-pub static PATTERNS: Lazy<Vec<Pattern>> = Lazy::new(|| {
+static PATTERN: Lazy<Vec<Pattern>> = Lazy::new(|| {
     vec![
         Pattern { regex: &*PATTERN0, modes: vec![
                 HashInfo{ name: "CRC-16", john: None ,hashcat: None ,variation: false ,description: None, popular: false },
@@ -1576,30 +1576,41 @@ pub struct IdentifiedHashes<'a> {
 
 impl<'a> IdentifiedHashes<'a> {
     fn new(input: &str) -> Self {
-        Self { hashname: input.to_string(), popular: Vec::new(), unpopular: Vec::new() }
+        Self {
+            hashname: input.to_string(),
+            popular: Vec::new(),
+            unpopular: Vec::new(),
+        }
     }
 }
 
 impl<'a> HashIdentifier<'a> {
     pub fn new() -> Self {
         Self {
-            patterns: &*PATTERNS,
+            patterns: &*PATTERN,
         }
     }
     pub fn is_match(&self, input: &str) -> IdentifiedHashes {
-        let correct: Vec<&HashInfo> = self.patterns.iter().filter_map(|pattern| match pattern.regex.is_match(input.as_bytes()) {
-            Ok(true) => Some(pattern),
-            Ok(false) => None,
-            Err(e) => {
-                eprintln!("Error {}",e);
-                std::process::exit(1);
-            }
-        }).flat_map(|pattern| pattern.modes.iter()).collect();
+        let correct: Vec<&HashInfo> = self
+            .patterns
+            .iter()
+            .filter_map(|pattern| match pattern.regex.is_match(input.as_bytes()) {
+                Ok(true) => Some(pattern),
+                Ok(false) => None,
+                Err(e) => {
+                    eprintln!("Error {}", e);
+                    std::process::exit(1);
+                }
+            })
+            .flat_map(|pattern| pattern.modes.iter())
+            .collect();
         let mut output: IdentifiedHashes = IdentifiedHashes::new(input);
-        correct.into_iter().for_each(|hashinfo| match hashinfo.popular {
-            true => output.popular.push(hashinfo),
-            false => output.unpopular.push(hashinfo),
-        });
+        correct
+            .into_iter()
+            .for_each(|hashinfo| match hashinfo.popular {
+                true => output.popular.push(hashinfo),
+                false => output.unpopular.push(hashinfo),
+            });
         output
     }
 }

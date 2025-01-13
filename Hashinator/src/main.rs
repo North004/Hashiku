@@ -1,58 +1,80 @@
 mod output;
 mod patterns;
-use std::{fs, path::PathBuf};
-use clap::{ArgGroup, Parser};
+
+use clap::{Arg, Command};
+use colored::Colorize;
 use output::output_complete;
 use patterns::{HashIdentifier, IdentifiedHashes};
-use output::BANNER;
-
-#[derive(Parser, Debug)]
-#[command(version = "0.0.1", about = "Identify hashes blazingly fast", long_about = format!("{}\nA tool written in rust used to identify over 3000+ at blazingly fast speeds",BANNER))]
-#[command(group(
-    ArgGroup::new("input")
-        .required(true)
-        .args(&["text", "file"])
-))]
-pub struct Args {
-    #[arg(short = 't', long = "text")]
-    pub text: Option<String>,
-    #[arg(short = 'f', long = "file")]
-    pub file: Option<PathBuf>,
-    #[arg(short = 'n', long = "no-banner")]
-    pub nobanner: bool,
-    #[arg(short = 'v', long = "verbose", action = clap::ArgAction::Count)]
-    pub verbosity: u8,
-}
-
+use std::{fs, path::PathBuf};
 
 fn main() {
-    let hash = HashIdentifier::new();
-    let args = Args::parse();
-    match args.nobanner {
-        false => output::banner(),
-        _ => (),
-    };
+    let args = Command::new("Hashinator")
+        .version("1.0")
+        .author("NorthSky <northsky.dev@pm.me>")
+        .about("A program to identify hashes blazingly fast")
+        .arg(
+            Arg::new("text")
+                .short('t')
+                .long("text")
+                .value_name("TEXT")
+                .help("User supplied hash to detect")
+                .action(clap::ArgAction::Set),
+        )
+        .arg(
+            Arg::new("file")
+                .short('f')
+                .long("file")
+                .value_name("FILE")
+                .help("User supplied file with hashes on each line to detect")
+                .value_parser(clap::value_parser!(PathBuf)),
+        )
+        .arg(
+            Arg::new("nobanner")
+                .short('n')
+                .long("no-banner")
+                .help("Disables banner")
+                .action(clap::ArgAction::SetFalse),
+        )
+        .arg(
+            Arg::new("verbose")
+                .short('v')
+                .long("verbose")
+                .help("Sets verbosity level")
+                .action(clap::ArgAction::Count),
+        )
+        .group(
+            clap::ArgGroup::new("input")
+                .args(["text", "file"]) // Grouping the arguments
+                .required(true), // Ensures at least one is provided
+        )
+        .get_matches();
 
-    if let Some(file_path) = args.file {
+    if args.get_flag("nobanner") {
+        println!("{}", output::get_bannter().red());
+    }
+
+    let hash = HashIdentifier::new();
+
+    if let Some(file_path) = args.get_one::<PathBuf>("file") {
         match fs::read_to_string(file_path) {
             Ok(content) => {
                 let lines = content.lines();
                 for line in lines {
                     let output: IdentifiedHashes = hash.is_match(line.trim());
-                    output_complete(output,args.verbosity);
+                    output_complete(output, args.get_count("verbose"));
                 }
             }
-            Err(e) =>  {
-                eprintln!("Error reading file: {}",e);
+            Err(e) => {
+                eprintln!("Error reading file: {}", e);
                 std::process::exit(1)
             }
         }
-        } else if let Some(ref text) = args.text {
-            let output: IdentifiedHashes = hash.is_match(text);
-            output_complete(output,args.verbosity);
-        } else {
-            eprintln!("No valid input provided.");
-            std::process::exit(1);
-        }
-        std::process::exit(0)
+    } else if let Some(text) = &args.get_one::<String>("text") {
+        let output: IdentifiedHashes = hash.is_match(text);
+        output_complete(output, args.get_count("verbose"));
+    } else {
+        eprintln!("No valid input provided.");
+        std::process::exit(1);
+    }
+    std::process::exit(0)
 }
