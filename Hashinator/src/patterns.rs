@@ -806,7 +806,7 @@ static PATTERN: Lazy<Vec<Pattern>> = Lazy::new(|| {
       ]},
         Pattern { regex: &*PATTERN17, modes: vec![
                 HashInfo{ name: "MD5", john: Some("raw-md5") ,hashcat: Some("0") ,variation: false ,description: Some("Used to be in linux shadow and was used for SSL/TLS"), popular: true },
-                HashInfo{ name: "MD4", john: Some("raw-md4") ,hashcat: Some("900") ,variation: false ,description: None, popular: true },
+                HashInfo{ name: "MD4", john: Some("raw-md4") ,hashcat: Some("900") ,variation: false ,description: Some("Was used in NTLM (upto xp) is now depracted and mainly used for checksums now"), popular: true },
                 HashInfo{ name: "Double MD5", john: None ,hashcat: Some("2600") ,variation: false ,description: None, popular: false },
                 HashInfo{ name: "Tiger-128", john: None ,hashcat: None ,variation: false ,description: None, popular: false },
                 HashInfo{ name: "Skein-256(128)", john: None ,hashcat: None ,variation: false ,description: None, popular: false },
@@ -869,10 +869,10 @@ static PATTERN: Lazy<Vec<Pattern>> = Lazy::new(|| {
                 HashInfo{ name: "NTLM", john: Some("nt") ,hashcat: Some("1000") ,variation: false ,description: Some("Used to be used in active directory and SAM database"), popular: true },
       ]},
         Pattern { regex: &*PATTERN27, modes: vec![
-                HashInfo{ name: "Domain Cached Credentials", john: Some("mscash") ,hashcat: Some("1100") ,variation: false ,description: None, popular: true },
+                HashInfo{ name: "Domain Cached Credentials", john: Some("mscash") ,hashcat: Some("1100") ,variation: false ,description: Some("Used in windows when domain controller is unavailiable allows login with cached credentials used upto WinXP"), popular: true },
       ]},
         Pattern { regex: &*PATTERN28, modes: vec![
-                HashInfo{ name: "Domain Cached Credentials 2", john: Some("mscash2") ,hashcat: Some("2100") ,variation: false ,description: None, popular: true },
+                HashInfo{ name: "Domain Cached Credentials 2", john: Some("mscash2") ,hashcat: Some("2100") ,variation: false ,description: Some("Used in windows when domain controller is unavailiable allows login with cached credentials used in WinVista and later"), popular: true },
       ]},
         Pattern { regex: &*PATTERN29, modes: vec![
                 HashInfo{ name: "SHA-1(Base64)", john: Some("nsldap") ,hashcat: Some("101") ,variation: false ,description: None, popular: false },
@@ -1106,7 +1106,7 @@ static PATTERN: Lazy<Vec<Pattern>> = Lazy::new(|| {
       ]},
         Pattern { regex: &*PATTERN72, modes: vec![
                 HashInfo{ name: "SHA-512", john: Some("raw-sha512") ,hashcat: Some("1700") ,variation: false ,description: Some("Used in Bitcoin Blockchain and Shadow Files"), popular: true },
-                HashInfo{ name: "Keccak-512", john: None ,hashcat: Some("1800") ,variation: false ,description: None, popular: true },
+                HashInfo{ name: "Keccak-512", john: None ,hashcat: Some("1800") ,variation: false ,description: Some("3GPP TS 35.231 Tuak used in telecommunications for transport key agreement"), popular: true },
                 HashInfo{ name: "Whirlpool", john: Some("whirlpool") ,hashcat: Some("6100") ,variation: false ,description: None, popular: false },
                 HashInfo{ name: "Salsa10", john: None ,hashcat: None ,variation: false ,description: Some("Not a hash function"), popular: false },
                 HashInfo{ name: "Salsa20", john: None ,hashcat: None ,variation: false ,description: Some("Not a hash function"), popular: false },
@@ -1123,7 +1123,7 @@ static PATTERN: Lazy<Vec<Pattern>> = Lazy::new(|| {
                 HashInfo{ name: "HMAC-SHA512 (key = $salt)", john: Some("hmac-sha512") ,hashcat: Some("1760") ,variation: true ,description: None, popular: false },
       ]},
         Pattern { regex: &*PATTERN73, modes: vec![
-                HashInfo{ name: "Keccak-256", john: None ,hashcat: Some("17800") ,variation: false ,description: None, popular: true },
+                HashInfo{ name: "Keccak-256", john: None ,hashcat: Some("17800") ,variation: false ,description: Some("Used in ethereum blockchain for address generation and block hashing and more."), popular: true },
       ]},
         Pattern { regex: &*PATTERN74, modes: vec![
                 HashInfo{ name: "Keccak-384", john: None ,hashcat: Some("17900") ,variation: false ,description: None, popular: false },
