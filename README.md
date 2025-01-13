@@ -2,7 +2,7 @@
 
 🔥 A blazingly fast tool for identifyig hashes
 
-[Alt text](./example.png)
+<img src="example.png" class="img-responsive" alt=""> </div>
 
 ## Table of Contents
 - [About](#about)
