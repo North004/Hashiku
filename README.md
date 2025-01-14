@@ -2,7 +2,6 @@
 
 🔥 The fastest hash identification tool ( i could find )
 
-<img src="example.png" class="img-responsive" alt=""> </div>
 
 ## Table of Contents
 - [About](#about)

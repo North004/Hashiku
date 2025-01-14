@@ -26,7 +26,7 @@ const BANNER: &str = "
 ██║  ██║██║  ██║███████║██║  ██║██║██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║
 ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
 Github: https://github.com/North004/Hashinator
-Author: northsky.dev@pm.me
+Author: north004@pm.me
 ";
 
 pub fn get_bannter() -> &'static str {

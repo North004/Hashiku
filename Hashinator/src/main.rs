@@ -17,7 +17,6 @@
 */
 mod output;
 mod patterns;
-
 use clap::{Arg, Command};
 use colored::Colorize;
 use output::output_complete;
