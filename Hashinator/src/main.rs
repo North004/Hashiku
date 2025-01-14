@@ -1,3 +1,20 @@
+/*
+    Hashinator a Blazingly fast hash identificaiton tool written in rust
+    Copyright (C) 2025 Jamie G. (@North004)  north004@pm.me
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 mod output;
 mod patterns;
 
@@ -9,8 +26,8 @@ use std::{fs, path::PathBuf};
 
 fn main() {
     let args = Command::new("Hashinator")
-        .version("1.0")
-        .author("NorthSky <northsky.dev@pm.me>")
+        .version("1.0.1")
+        .author("North004 <north004@pm.me>")
         .about("A program to identify hashes blazingly fast")
         .arg(
             Arg::new("text")
