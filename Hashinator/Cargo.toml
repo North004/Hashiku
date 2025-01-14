@@ -1,6 +1,6 @@
 [package]
 name = "hashinator"
-version = "1.0.0"
+version = "1.0.1"
 edition = "2021"
 description = "A tool to identify hashes blazingly fast"
 repository = "https://github.com/North004/Hashinator"
