@@ -8,15 +8,15 @@ cargo install hashinator
 ```
 
 ## Usage
-1. crack the below hash
+1. identify the below hash
 ```bash
 hashinator -t 1ecdeba4b67bf053507826c355828a30 
 ```
-2. crack all hashes in the file
+2. identify all hashes in the file
 ```bash
 hashinator -f file
 ```
-3. crack the hash with verbose output
+3. identify the hash with verbose output
 ```bash
 hashinator -v -t 1ecdeba4b67bf053507826c355828a30  
 ```
