@@ -1,0 +1,13 @@
+[package]
+name = "hashinator"
+version = "1.0.0"
+edition = "2021"
+description = "A tool to identify hashes blazingly fast"
+repository = "https://github.com/North004/Hashinator"
+license = "GPL-3.0-or-later"
+
+[dependencies]
+clap = "4.5.26"
+colored = "3.0.0"
+once_cell = "1.20.2"
+pcre2 = "0.2.9"

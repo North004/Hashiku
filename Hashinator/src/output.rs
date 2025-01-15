@@ -1,6 +1,6 @@
 /*
     Hashinator a Blazingly fast hash identificaiton tool written in rust
-    Copyright (C) 2025 Jamie G. (@North004) north004@pm.me
+    Copyright (C) 2025 NorthMatrix northmatrix@pm.me
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,8 +25,8 @@ const BANNER: &str = "
 ██╔══██║██╔══██║╚════██║██╔══██║██║██║╚██╗██║██╔══██║   ██║   ██║   ██║██╔══██╗
 ██║  ██║██║  ██║███████║██║  ██║██║██║ ╚████║██║  ██║   ██║   ╚██████╔╝██║  ██║
 ╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝   ╚═╝    ╚═════╝ ╚═╝  ╚═╝
-Github: https://github.com/North004/Hashinator
-Author: north004@pm.me
+Github: https://github.com/NorthMatrix/Hashinator
+Author: NorthMatrix northmatrix@pm.me
 ";
 
 pub fn get_bannter() -> &'static str {

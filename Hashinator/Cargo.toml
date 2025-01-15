@@ -2,9 +2,11 @@
 name = "hashinator"
 version = "1.0.0"
 edition = "2021"
+authors = ["NorthMatrix northmatrix@pm.me"]
 description = "A tool to identify hashes blazingly fast"
-repository = "https://github.com/North004/Hashinator"
+repository = "https://github.com/NorthMatrix/Hashinator"
 license = "GPL-3.0-or-later"
+readme = "README.md"
 
 [dependencies]
 clap = "4.5.26"
