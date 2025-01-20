@@ -17,7 +17,10 @@
 ```
 cargo install hashinator
 ```
-
+if you have run the above command and it is still not working you may need to add .cargo/bin to your path this can be achived by adding this line to your .bashrc or equivilant
+```
+export PATH=$HOME/.cargo/bin:$PATH
+```
 ## Usage
 ```
 hashinator -t 1bc43a00ffd1a6ac361dae94f46cdc44
