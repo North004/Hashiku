@@ -1,6 +1,6 @@
 /*
     Hashinator a Blazingly fast hash identificaiton tool written in rust
-    Copyright (C) 2025 NorthMatrix northmatrix@pm.me
+    Copyright (C) 2025 NorthMatrix contact@northmatrix.co.uk
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
